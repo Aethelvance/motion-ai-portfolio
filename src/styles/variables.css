@@ -1,0 +1,28 @@
+:root {
+  /* Neutrals - dark mode */
+  --base: #111315;
+  --surface: #171a1f;
+  --surface-elevated: #22272f;
+  --text-primary: #f5f7fa;
+
+  /* Brand accents */
+  --primary: #1d5bff;
+  --accent-blue: #6ea8ff;
+
+  /* Unused palette colors with usage hints */
+  /* --border: #343a45; Use for dividers, outlines, and card borders. */
+  /* --text-secondary: #aeb7c2; Use for captions, metadata, and muted text. */
+  /* --cyan: #20c8f5; Use for highlights, active states, and secondary accents. */
+  /* --success: #22c55e; Use for success messages and positive indicators. */
+  /* --warning: #fbbf24; Use for warnings and cautionary labels. */
+  /* --error: #ff5c5c; Use for errors, invalid states, and destructive actions. */
+  /* --info: #38bdf9; Use for informational badges and tooltips. */
+
+  /* Animation easings */
+  --hover: all 0.2s ease-in;
+  --slide: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+  --slide-delay: all 0.4s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  --slide-slow: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  --zoom: all 1s cubic-bezier(0.55, 0, 0.1, 1);
+  --zoom-slow: all 2.4s cubic-bezier(0.55, 0, 0.1, 1);
+}

@@ -1,0 +1,35 @@
+.menuContainer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+}
+
+.menu {
+  display: block;
+  width: 100%;
+  padding: 15% 10%;
+  margin: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .menu {
+    padding: 12% 15%;
+  }
+}
+
+.menu li {
+  text-align: left;
+  display: block;
+  padding: 12px 0;
+}
+
+@media (min-width: 768px) {
+  .menu li {
+    padding: 15px 0;
+  }
+}

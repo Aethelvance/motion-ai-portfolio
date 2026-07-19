@@ -58,6 +58,14 @@ Consult these guides before working on related tasks:
 
 - **Core Framework:** Astro (Latest Stable)
 - **UI Architecture:** React 19 (Component Islands via `@astrojs/react`)
-- **Styling Architecture:** Twind v1 (`@twind/core` + `@twind/preset-tailwind`) - *Note: Do not introduce standard Tailwind CSS config files.*
+- **Styling Architecture:** Twind v1 (`@twind/core` + `@twind/preset-tailwind`) is the default for all utility-first styling. *Note: Do not introduce standard Tailwind CSS config files.*
+- **Complex CSS Escape Hatch:** CSS Modules (`.module.css`) or SCSS Modules (`.module.scss`) are allowed when a design cannot be reproduced faithfully with Twind/Tailwind utilities alone (e.g. intricate diagonal animations, pseudo-element hover effects, or SCSS variables). Twind/Tailwind must still be preferred for layout, spacing, typography, and color utilities wherever it yields equivalent output.
 - **Animation Engine:** Framer Motion
 - **Iconography:** Lucide-react
+
+## Browser Automation / Visual Testing
+
+- **Tool:** Playwright (`playwright`) installed as a devDependency via `pnpm add -D playwright`.
+- **Allowed browser:** Only the system-installed Google Chrome (`/usr/bin/google-chrome-stable`).
+- **Forbidden browsers:** Brave, Firefox, WebKit, or any other user-owned browser profile must not be touched.
+- **Usage:** Playwright may be used to open `localhost`, interact with the UI, and capture screenshots for visual validation. It must run in headless mode and use the system Chrome executable path.

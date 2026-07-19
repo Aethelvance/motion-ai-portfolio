@@ -1,0 +1,35 @@
+.menuLink {
+  text-decoration: none;
+  color: var(--text-primary);
+  display: inline-block;
+  padding: 10px 0;
+  position: relative;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.menuLink:hover::before,
+.menuLink:focus-visible::before {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.menuLink::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 18px;
+  height: 4px;
+  opacity: 0;
+  background-color: var(--primary);
+  transform: translateX(100px);
+  transition: var(--slide);
+}
+
+.menuLink.active::before {
+  opacity: 1;
+  transform: translateX(0px);
+}

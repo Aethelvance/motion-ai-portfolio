@@ -1,0 +1,40 @@
+.menuBgWrapper {
+  position: absolute;
+  inset: -20vh -20vw;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.menuBgStage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250vmax;
+  height: 250vmax;
+  transform: translate(-50%, -50%);
+}
+
+.menuBg {
+  position: absolute;
+  display: block;
+  width: 200%;
+  height: 40%;
+}
+
+.menuBg.middle {
+  top: 29%;
+  left: -53%;
+  transform: rotate(-45deg) scaleY(0);
+}
+
+.menuBg.top {
+  left: -34%;
+  top: 0;
+  transform: rotate(-45deg) translateY(-152%);
+}
+
+.menuBg.bottom {
+  top: 110%;
+  left: -20%;
+  transform: rotate(-45deg) translateY(25%);
+}
