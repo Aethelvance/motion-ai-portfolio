@@ -1,7 +1,9 @@
 ---
 import '@/styles/variables.css';
 import TwindInit from '@/components/providers/TwindInit.astro';
+import SmoothScroll from '@/components/providers/SmoothScroll.astro';
 import HamburgerMenu from '@/components/organisms/HamburgerMenu/HamburgerMenu';
+import SideNav from '@/components/molecules/SideNav/SideNav';
 
 export interface Props {
   title?: string;
@@ -26,9 +28,11 @@ const { title = 'Ingeniero de IA', currentPath } = Astro.props;
       rel="stylesheet"
     />
     <TwindInit />
+    <SmoothScroll />
   </head>
   <body class="min-h-screen bg-base text-text-primary font-sans antialiased">
     <HamburgerMenu currentPath={currentPath} client:load />
+    <SideNav client:load />
     <slot />
   </body>
 </html>

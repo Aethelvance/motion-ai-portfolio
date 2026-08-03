@@ -1,0 +1,50 @@
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.875rem;
+  padding: 0.5rem 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  transition: background 0.2s ease-out;
+}
+
+.item:hover .dot {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.pill {
+  width: 3px;
+  height: 22px;
+  background: #00f5ff;
+  border-radius: 2px;
+}
+
+.label {
+  color: #00f5ff;
+  white-space: nowrap;
+}
