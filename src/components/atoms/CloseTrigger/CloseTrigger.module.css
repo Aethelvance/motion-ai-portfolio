@@ -1,7 +1,8 @@
 .closeTrigger {
   position: fixed;
   top: 42px;
-  right: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: block;
   width: 42px;
   height: 42px;

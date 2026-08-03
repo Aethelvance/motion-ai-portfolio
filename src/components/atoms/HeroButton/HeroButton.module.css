@@ -1,0 +1,35 @@
+.btn {
+  padding: 1rem 2.5rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+}
+
+.btn:active {
+  transform: scale(0.985);
+}
+
+.btn.primary {
+  background: #fff;
+  color: #000;
+}
+
+.btn.primary:hover {
+  background: transparent;
+  color: #fff;
+}
+
+.btn.secondary {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+}
+
+.btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
