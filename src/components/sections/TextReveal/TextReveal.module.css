@@ -1,0 +1,51 @@
+.section {
+  position: relative;
+  height: 240vh;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem;
+}
+
+.label {
+  position: absolute;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: #20c8f5;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.paragraph {
+  max-width: 56rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.375;
+  margin: 0;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+@media (min-width: 768px) {
+  .paragraph {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .paragraph {
+    font-size: 2.75rem;
+    line-height: 1.25;
+  }
+}
