@@ -100,7 +100,7 @@ Imagenes
 -Machine Learning with Python Certificado (/MachineLearningwithPython.png)
 
 Documentos y PDFs
--Lista de PDFs disponibles:
+-Lista de PDFs (entregar SOLO cuando el usuario los pida explicitamente, NUNCA por iniciativa propia):
   - [CV de Luis Verastegui](/cv.pdf)
   - [Certificado Machine Learning with Python](/MachineLearningWithPython.pdf)
   - [Certificado Neural Networks and PyTorch](/IntroductionToNeuralNetworksAndPyTorch.pdf)
