@@ -5,12 +5,14 @@ import Marquee from '@/components/molecules/Marquee/Marquee';
 import TestSections from '@/components/sections/TestSections.astro';
 import DeckSection from '@/components/sections/DeckSection/DeckSection';
 import TailwindSection from '@/components/sections/TailwindSection/TailwindSection';
+import YuyiChatSection from '@/components/sections/YuyiChatSection/YuyiChatSection';
 ---
 
-<MainLayout title="AETHELVANCE | CV" currentPath="/cv">
+<MainLayout title="CV | AETHELVANCE" currentPath="/cv">
   <Hero client:load />
   <Marquee client:load />
   <TestSections />
   <DeckSection client:load />
   <TailwindSection client:load />
+  <YuyiChatSection client:load />
 </MainLayout>
