@@ -16,8 +16,9 @@ const personality = readFileSync(join(__dirname, 'personality.txt'), 'utf-8');
 const mission = readFileSync(join(__dirname, 'mission.txt'), 'utf-8');
 const aboutMe = readFileSync(join(__dirname, 'about-me.txt'), 'utf-8');
 const examples = readFileSync(join(__dirname, 'examples.txt'), 'utf-8');
-// Resolve relative markdown link paths (/foo.png) against SITE_URL so the AI can use short paths in about-me.txt without hardcoding the domain.
-const systemPrompt = `${personality}\n\n---\n\n${mission}\n\n---\n\n${examples}\n\n---\n\n${aboutMe}`.replace(
+const pageContext = readFileSync(join(__dirname, 'page-context.md'), 'utf-8');
+// Resolve relative markdown link paths (/foo.png) against SITE_URL so the AI can use short paths in context files without hardcoding the domain.
+const systemPrompt = `${personality}\n\n---\n\n${mission}\n\n---\n\n${examples}\n\n---\n\n${aboutMe}\n\n---\n\n${pageContext}`.replace(
   /\]\((\/[^)]+)\)/g,
   `](${SITE_URL}$1)`,
 );
@@ -79,8 +80,28 @@ const server = createServer(async (req, res) => {
     }
 
     const sanitized = messages
-      .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
-      .map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }))
+      .filter((m) => m && (m.role === 'user' || m.role === 'assistant'))
+      .map((m) => {
+        if (typeof m.content === 'string') {
+          return { role: m.role, content: m.content.slice(0, 2000) };
+        }
+        if (Array.isArray(m.content)) {
+          const parts = m.content
+            .map((p) => {
+              if (p && p.type === 'text') {
+                return { type: 'text', text: String(p.text ?? '').slice(0, 2000) };
+              }
+              if (p && p.type === 'image_url' && p.image_url && typeof p.image_url.url === 'string') {
+                return { type: 'image_url', image_url: { url: p.image_url.url } };
+              }
+              return null;
+            })
+            .filter((p) => p !== null);
+          return { role: m.role, content: parts };
+        }
+        return null;
+      })
+      .filter((m) => m !== null)
       .slice(-20);
 
     try {

@@ -1,0 +1,8 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import YuyiPage from '@/components/sections/YuyiPage/YuyiPage';
+---
+
+<MainLayout title="Yuyi AI | AETHELVANCE" currentPath="/yuyi" showFooter={false}>
+  <YuyiPage client:load />
+</MainLayout>

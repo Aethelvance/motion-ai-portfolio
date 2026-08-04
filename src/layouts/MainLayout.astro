@@ -11,9 +11,10 @@ import AIAssistant from '@/components/organisms/AIAssistant/AIAssistant';
 export interface Props {
   title?: string;
   currentPath?: string;
+  showFooter?: boolean;
 }
 
-const { title = 'Ingeniero de IA', currentPath } = Astro.props;
+const { title = 'Ingeniero de IA', currentPath, showFooter = true } = Astro.props;
 ---
 
 <html lang="es">
@@ -42,7 +43,7 @@ const { title = 'Ingeniero de IA', currentPath } = Astro.props;
     <HamburgerMenu currentPath={currentPath} client:load />
     <SideNav client:load />
     <slot />
-    <Footer client:load />
+    {showFooter && <Footer client:load />}
     <AIAssistant client:load />
   </body>
 </html>

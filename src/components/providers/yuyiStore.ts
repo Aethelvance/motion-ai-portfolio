@@ -11,7 +11,26 @@ interface ImportMeta {
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
-  text: string;
+  content: string | MessageContentPart[];
+}
+
+export type MessageContentPart =
+  | { type: 'text'; text: string }
+  | { type: 'image_url'; image_url: { url: string } };
+
+export function getMessageText(msg: ChatMessage): string {
+  if (typeof msg.content === 'string') return msg.content;
+  if (Array.isArray(msg.content)) {
+    return msg.content.find((p) => p.type === 'text')?.text ?? '';
+  }
+  const legacy = (msg as unknown as { text?: string }).text;
+  return legacy ?? '';
+}
+
+export function getMessageImage(msg: ChatMessage): string | null {
+  if (typeof msg.content === 'string') return null;
+  const p = msg.content.find((p) => p.type === 'image_url');
+  return p?.image_url?.url ?? null;
 }
 
 export interface ChatSession {
@@ -32,7 +51,7 @@ export interface YuyiSnapshot {
 const STORAGE_KEY = 'yuyi-chats-v1';
 const INITIAL_MESSAGE: ChatMessage = {
   role: 'assistant',
-  text: 'Hola, soy Yuyi AI, el asistente de Luis Verastegui. ¿En qué puedo ayudarte?',
+  content: 'Hola, soy Yuyi AI, el asistente de Luis Verastegui. ¿En qué puedo ayudarte?',
 };
 
 const API_URL: string =
@@ -48,6 +67,16 @@ function loadFromStorage(): { chats: ChatSession[]; currentChatId: string | null
     if (!raw) return { chats: [], currentChatId: null };
     const parsed = JSON.parse(raw) as { chats: ChatSession[]; currentChatId: string | null };
     if (!Array.isArray(parsed.chats)) return { chats: [], currentChatId: null };
+    // Migrate legacy messages ({role, text}) to the new content-based schema ({role, content}).
+    for (const chat of parsed.chats) {
+      chat.messages = chat.messages.map((m) => {
+        const legacy = m as unknown as { text?: string };
+        if (typeof legacy.text === 'string' && (m as { content?: unknown }).content === undefined) {
+          return { role: m.role, content: legacy.text };
+        }
+        return m;
+      });
+    }
     return { chats: parsed.chats, currentChatId: parsed.currentChatId };
   } catch {
     return { chats: [], currentChatId: null };
@@ -70,7 +99,8 @@ function makeId() {
 function deriveTitle(messages: ChatMessage[]): string {
   const firstUser = messages.find((m) => m.role === 'user');
   if (!firstUser) return 'Nueva conversación';
-  const trimmed = firstUser.text.trim().replace(/\s+/g, ' ');
+  const trimmed = getMessageText(firstUser).trim().replace(/\s+/g, ' ');
+  if (!trimmed) return 'Nueva conversación';
   return trimmed.length > 40 ? `${trimmed.slice(0, 40)}…` : trimmed;
 }
 
@@ -176,13 +206,19 @@ class YuyiStore {
     this.notify();
   };
 
-  send = async () => {
+  send = async (imageDataUrl?: string) => {
     const text = this.input.trim();
-    if (!text || this.isLoading) return;
+    if (this.isLoading) return;
+    if (!text && !imageDataUrl) return;
     const current = this.chats.find((c) => c.id === this.currentChatId);
     if (!current) return;
 
-    const userMsg: ChatMessage = { role: 'user', text };
+    const parts: MessageContentPart[] = [];
+    if (text) parts.push({ type: 'text', text });
+    if (imageDataUrl) parts.push({ type: 'image_url', image_url: { url: imageDataUrl } });
+    const content: ChatMessage['content'] = imageDataUrl ? parts : text;
+
+    const userMsg: ChatMessage = { role: 'user', content };
     const nextMessages = [...current.messages, userMsg];
     current.messages = nextMessages;
     current.title = deriveTitle(nextMessages);
@@ -196,21 +232,21 @@ class YuyiStore {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: nextMessages.map((m) => ({ role: m.role, content: m.text })),
+          messages: nextMessages.map((m) => ({ role: m.role, content: m.content })),
         }),
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const data = await res.json();
-      const reply: string = data.message ?? 'Sin respuesta del servidor.';
-      current.messages = [...nextMessages, { role: 'assistant', text: reply }];
+      const reply: string = data.message ?? 'Sin respuesta del modelo.';
+      current.messages = [...nextMessages, { role: 'assistant', content: reply }];
     } catch {
       current.messages = [
         ...nextMessages,
         {
           role: 'assistant',
-          text: 'No pude conectar con el servidor. Asegúrate de que esté corriendo (`pnpm server`).',
+          content: 'No pude conectar con el servidor. Asegúrate de que esté corriendo (`pnpm server`).',
         },
       ];
     } finally {

@@ -1,11 +1,11 @@
-// Floating AI assistant: a bubble in the bottom-left corner that opens a small chat window. State and conversation are shared with the full YuyiChatSection via the global yuyiStore. The floating UI auto-hides when the full Yuyi AI section is in the viewport, and reappears when the user scrolls away from it.
-import { useEffect, useRef, useState } from 'react';
+// Floating AI assistant: a bubble in the bottom-left corner that opens a small chat window. State and conversation are shared with the dedicated /yuyi page via the global yuyiStore. The floating UI is suppressed on /yuyi (the page IS the chat, so the bubble would be redundant); it only renders on the other pages.
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Plus } from 'lucide-react';
-import { useYuyiStore, yuyiStore } from '@/components/providers/yuyiStore';
+import { X, Send, Plus, Check, CheckCheck } from 'lucide-react';
+import { useYuyiStore, yuyiStore, getMessageText, getMessageImage } from '@/components/providers/yuyiStore';
 import { AssistantMessage } from './AssistantMessage';
 import { useAnimateLastMessage } from './useAnimateLastMessage';
-import { useNestedScroll } from '@/hooks/useNestedScroll';
+import { useChatMessagesScroll } from '@/hooks/useChatMessagesScroll';
 import styles from './AIAssistant.module.css';
 
 const YuyiIcon = () => (
@@ -18,29 +18,20 @@ const YuyiIcon = () => (
 
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isSectionVisible, setIsSectionVisible] = useState(false);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [showFloating, setShowFloating] = useState(false);
   const { messages, isLoading, input, currentChatId } = useYuyiStore();
   const shouldAnimate = useAnimateLastMessage(messages, currentChatId);
-  useNestedScroll(messagesContainerRef);
+  const messagesRef = useChatMessagesScroll<HTMLDivElement>(currentChatId);
+  const lastAssistantIdx = (() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].role === 'assistant') return i;
+    }
+    return -1;
+  })();
 
-  // Hide the floating UI when the full YuyiChatSection is in the viewport; show it again when the user scrolls away.
   useEffect(() => {
-    const section = document.getElementById('yuyi');
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsSectionVisible(entry.isIntersecting);
-        if (entry.isIntersecting) setIsOpen(false);
-      },
-      { threshold: 0.15 },
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
+    setShowFloating(!window.location.pathname.startsWith('/yuyi'));
   }, []);
-
-  const showFloating = !isSectionVisible;
 
   return (
     <>
@@ -56,7 +47,9 @@ export default function AIAssistant() {
             <div className="flex items-center justify-between border-b border-border bg-surface-elevated px-4 py-3">
               <div className="flex items-center gap-2">
                 <YuyiIcon />
-                <span className="font-mono text-sm font-semibold text-text-primary">Yuyi AI</span>
+                <span className="font-mono text-sm font-semibold text-text-primary">
+                  {isLoading ? 'Yuyi AI · Escribiendo…' : 'Yuyi AI'}
+                </span>
               </div>
               <div className="flex items-center gap-1">
                 <button
@@ -77,16 +70,29 @@ export default function AIAssistant() {
               </div>
             </div>
 
-            <div ref={messagesContainerRef} className={`flex-1 overflow-y-auto p-4 ${styles.messages}`}>
+            <div ref={messagesRef} className={`flex-1 overflow-y-auto p-4 ${styles.messages}`}>
               {messages.map((msg, i) => {
                 const key = `${currentChatId}_${i}`;
                 const isConsecutive = i > 0 && messages[i - 1].role === msg.role;
                 const marginClass = isConsecutive ? 'mt-1' : 'mt-3';
                 if (msg.role === 'user') {
+                  const isSeen = i < lastAssistantIdx;
+                  const imageUrl = getMessageImage(msg);
+                  const text = getMessageText(msg);
                   return (
                     <div key={key} className={`flex justify-end ${marginClass}`}>
-                      <div className={`max-w-[85%] whitespace-pre-wrap rounded-2xl bg-primary px-3 py-2 text-sm leading-relaxed text-base ${styles.bubbleUser}`}>
-                        {msg.text}
+                      <div className={`max-w-[85%] rounded-2xl bg-primary px-3 py-2 text-sm leading-relaxed text-base ${styles.bubbleUser}`}>
+                        {imageUrl && (
+                          <img src={imageUrl} alt="" className="mb-1.5 max-h-48 max-w-full rounded-lg object-contain" />
+                        )}
+                        {text && <div className="whitespace-pre-wrap">{text}</div>}
+                        <div className="mt-0.5 flex justify-end">
+                          {isSeen ? (
+                            <CheckCheck className="h-3 w-3 text-cyan" aria-label="Visto" />
+                          ) : (
+                            <Check className="h-3 w-3 text-text-primary/40" aria-label="Enviado" />
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
@@ -94,7 +100,7 @@ export default function AIAssistant() {
                 return (
                   <AssistantMessage
                     key={key}
-                    text={msg.text}
+                    text={getMessageText(msg)}
                     animate={shouldAnimate(i)}
                     variant="floating"
                     className={styles.bubbleAssistant}

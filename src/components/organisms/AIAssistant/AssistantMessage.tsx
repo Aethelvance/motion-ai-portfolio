@@ -1,4 +1,4 @@
-// Multi-chunk assistant bubble: renders each "---"-separated chunk from the assistant message as its own bubble, released sequentially by useDelayedReveal (chunks are queued; each is appended to the output only after the previous chunk's delay has fully elapsed). Two style variants: "floating" (small AIAssistant window) and "fullpage" (YuyiChatSection).
+// Multi-chunk assistant bubble: renders each "---"-separated chunk from the assistant message as its own bubble, released sequentially by useDelayedReveal (chunks are queued; each is appended to the output only after the previous chunk's delay has fully elapsed). Two style variants: "floating" (small AIAssistant window) and "fullpage" (YuyiPage).
 import { useDelayedReveal } from './useDelayedReveal';
 import { renderRichText } from './renderRichText';
 
