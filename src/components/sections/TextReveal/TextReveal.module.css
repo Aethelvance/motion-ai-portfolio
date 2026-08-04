@@ -22,7 +22,7 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.4em;
-  color: #20c8f5;
+  color: var(--cyan);
   margin: 0;
   white-space: nowrap;
 }

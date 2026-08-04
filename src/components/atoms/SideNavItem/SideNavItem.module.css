@@ -40,11 +40,11 @@
 .pill {
   width: 3px;
   height: 22px;
-  background: #00f5ff;
+  background: var(--cyan);
   border-radius: 2px;
 }
 
 .label {
-  color: #00f5ff;
+  color: var(--cyan);
   white-space: nowrap;
 }

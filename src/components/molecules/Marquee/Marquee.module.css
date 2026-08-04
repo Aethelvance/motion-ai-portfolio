@@ -1,20 +1,24 @@
 .marquee {
   position: relative;
   overflow: hidden;
-  border-top: 1px solid #343a45;
-  border-bottom: 1px solid #343a45;
-  background: rgba(23, 26, 31, 0.6);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-60);
   padding: 1rem 0;
 }
 
-.track {
+.track,
+.trackReverse {
   display: flex;
   width: max-content;
-  animation: marquee-scroll 30s linear infinite;
+  animation-name: marquee-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 30s;
   will-change: transform;
 }
 
-.track.reverse {
+.trackReverse {
   animation-name: marquee-scroll-rev;
 }
 
@@ -32,7 +36,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  color: #aeb7c2;
+  color: var(--text-secondary);
 }
 
 .text {
@@ -42,26 +46,27 @@
 }
 
 .text:hover {
-  color: #20c8f5;
+  color: var(--cyan);
 }
 
 .icon {
-  color: #20c8f5;
+  color: var(--cyan);
   flex-shrink: 0;
 }
 
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to { transform: translateX(var(--translate, -50%)); }
 }
 
 @keyframes marquee-scroll-rev {
-  from { transform: translateX(-50%); }
+  from { transform: translateX(var(--translate, -50%)); }
   to { transform: translateX(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .track {
+  .track,
+  .trackReverse {
     animation: none;
   }
 }

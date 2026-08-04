@@ -1,22 +1,43 @@
 :root {
-  /* Neutrals - dark mode */
-  --base: #111315;
-  --surface: #171a1f;
-  --surface-elevated: #22272f;
+  /* Official palette — mirror of src/styles/twind.config.ts. Derived from HERO_COLORS and the Hero background. */
+
+  /* Neutrals */
+  --base: #0a0a0a;
+  --surface: #14141c;
+  --surface-elevated: #1f1f2a;
+  --card-bg: #101010;
+  --border: #2e2e3c;
   --text-primary: #f5f7fa;
+  --text-secondary: #a0a4b4;
 
-  /* Brand accents */
-  --primary: #1d5bff;
-  --accent-blue: #6ea8ff;
+  /* Accents */
+  --primary: #9D4EDD;
+  --cyan: #00F5FF;
+  --accent-blue: #6EA8FF;
+  --success: #00FF88;
+  --warning: #FFD700;
+  --error: #FF2D95;
+  --info: #FF6B35;
 
-  /* Unused palette colors with usage hints */
-  /* --border: #343a45; Use for dividers, outlines, and card borders. */
-  /* --text-secondary: #aeb7c2; Use for captions, metadata, and muted text. */
-  /* --cyan: #20c8f5; Use for highlights, active states, and secondary accents. */
-  /* --success: #22c55e; Use for success messages and positive indicators. */
-  /* --warning: #fbbf24; Use for warnings and cautionary labels. */
-  /* --error: #ff5c5c; Use for errors, invalid states, and destructive actions. */
-  /* --info: #38bdf9; Use for informational badges and tooltips. */
+  /* Precalculated variants (named {color}-{opacityPercent}). Update the base hex above AND these together when the palette changes. */
+  --surface-60: rgba(20, 20, 28, 0.6);
+  --cyan-12: rgba(0, 245, 255, 0.12);
+  --cyan-16: rgba(0, 245, 255, 0.16);
+  --cyan-50: rgba(0, 245, 255, 0.5);
+  --cyan-55: rgba(0, 245, 255, 0.55);
+  --accent-blue-12: rgba(110, 168, 255, 0.12);
+  --accent-blue-16: rgba(110, 168, 255, 0.16);
+  --error-16: rgba(255, 45, 149, 0.16);
+  --error-70: rgba(255, 45, 149, 0.7);
+  --success-16: rgba(0, 255, 136, 0.16);
+  --success-70: rgba(0, 255, 136, 0.7);
+  --warning-70: rgba(255, 215, 0, 0.7);
+
+  /* Card backgrounds: base + 2 RGB units tilted toward each accent's dominant channel. Update if --card-bg or the accent hex changes. */
+  --card-bg-error: #121010;
+  --card-bg-accent-blue: #101012;
+  --card-bg-cyan: #101212;
+  --card-bg-success: #101210;
 
   /* Animation easings */
   --hover: all 0.2s ease-in;
@@ -25,4 +46,24 @@
   --slide-slow: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
   --zoom: all 1s cubic-bezier(0.55, 0, 0.1, 1);
   --zoom-slow: all 2.4s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* Reusable grid background overlay (decorative). Apply `.grid-bg` to any section to get the fading dot/line grid behind its content. Requires the section to allow absolute children (position: relative is set here). */
+.grid-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+.grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
 }

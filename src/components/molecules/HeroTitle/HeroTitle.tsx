@@ -51,6 +51,7 @@ const letterVariants: Variants = {
 };
 
 export const HeroTitle = () => {
+  let globalIndex = 0;
   return (
     <motion.div
       className={styles.title}
@@ -58,19 +59,25 @@ export const HeroTitle = () => {
       initial="hidden"
       animate="visible"
     >
-      {HERO_LETTERS.map((char, index) => {
-        const color = HERO_COLORS[index % HERO_COLORS.length];
-        const variant = (index % 3) as HeroLetterVariant;
-        return (
-          <HeroLetter
-            key={`${char}-${index}`}
-            char={char}
-            color={color}
-            variant={variant}
-            variants={letterVariants}
-          />
-        );
-      })}
+      {HERO_LETTERS.flatMap((line, lineIndex) => [
+        ...(lineIndex > 0
+          ? [<div key={`break-${lineIndex}`} className={styles.lineBreak} aria-hidden="true" />]
+          : []),
+        ...line.map((char) => {
+          const color = HERO_COLORS[globalIndex % HERO_COLORS.length];
+          const variant = (globalIndex % 3) as HeroLetterVariant;
+          const currentIndex = globalIndex++;
+          return (
+            <HeroLetter
+              key={`${char}-${currentIndex}`}
+              char={char}
+              color={color}
+              variant={variant}
+              variants={letterVariants}
+            />
+          );
+        }),
+      ])}
     </motion.div>
   );
 };

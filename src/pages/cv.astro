@@ -3,10 +3,14 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import Hero from '@/components/organisms/Hero/Hero';
 import Marquee from '@/components/molecules/Marquee/Marquee';
 import TestSections from '@/components/sections/TestSections.astro';
+import DeckSection from '@/components/sections/DeckSection/DeckSection';
+import TailwindSection from '@/components/sections/TailwindSection/TailwindSection';
 ---
 
 <MainLayout title="AETHELVANCE | CV" currentPath="/cv">
   <Hero client:load />
   <Marquee client:load />
   <TestSections />
+  <DeckSection client:load />
+  <TailwindSection client:load />
 </MainLayout>

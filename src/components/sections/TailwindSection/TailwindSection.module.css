@@ -1,0 +1,32 @@
+.section {
+  position: relative;
+  min-height: 100svh;
+  padding: clamp(72px, 9vw, 140px) clamp(24px, 7vw, 112px);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.tailwindSection {
+  display: flex;
+  align-items: center;
+  background: var(--base);
+  border-block: 1px solid var(--border);
+}
+
+.typeRiver {
+  position: absolute;
+  inset: 11% -10% auto;
+  z-index: -1;
+  color: var(--accent-blue-12);
+  font-size: clamp(5rem, 12vw, 12rem);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
+  transform: rotate(-4deg);
+}
+
+.outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--cyan-16);
+}
