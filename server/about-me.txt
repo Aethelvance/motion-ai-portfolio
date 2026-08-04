@@ -105,3 +105,16 @@ Documentos y PDFs
   - [Certificado Machine Learning with Python](/MachineLearningWithPython.pdf)
   - [Certificado Neural Networks and PyTorch](/IntroductionToNeuralNetworksAndPyTorch.pdf)
   - [Certificado Deep Learning with PyTorch](/CourseraDeepLearningWithPyTorch.pdf)
+
+Capturas de proyectos (entregar SOLO cuando el usuario las pida explicitamente, NUNCA por iniciativa propia):
+Las imagenes viven en /screenshots/. Descripcion detallada en public/screenshots/descriptions.txt.
+
+- Yuyi AI (terminal TUI, ASCII art, personalidad coqueta): [Yuyi CLI menu](/screenshots/Yuyi-ai-1.png) --- [Yuyi conversacion](/screenshots/Yuyi-ai-2.png)
+- Minecraft AI (agente con tool calling, dramatica, atacada por zombies): [Minecraft cueva zombie](/screenshots/MinecraftAi-1.png) --- [Minecraft muerte](/screenshots/MinecraftAi-2.png) --- [Minecraft lluvia arana](/screenshots/MinecraftAi-3.png) --- [Minecraft tres zombies](/screenshots/MinecraftAi-4.png)
+- Mail API (Go, SMTP, envio de correos, repo privado): [Mail API repo](/screenshots/Mailapi-1.png) --- [Mail API API Keys](/screenshots/Mailapi-2.png) --- [Mail API cuenta SMTP](/screenshots/Mailapi-3.png) --- [Mail API email HTML](/screenshots/Mailapi-4.png)
+- Chat API (CYLUK Admin, playground con gpt-4o-mini, chat flows): [Chat API Data Sources](/screenshots/Chatapi-1.png) --- [Chat API Runtime gpt-4o-mini](/screenshots/Chatapi-2.png) --- [Chat API repo](/screenshots/Chatapi-3.png) --- [Chat API Chat Flows](/screenshots/Chatapi-4.png)
+- WhatsApp OpenWA (CylukWa, audit logs, probador de mensajes): [CylukWa Audit Logs](/screenshots/CylukWa-1.png) --- [CylukWa Probador de Mensajes](/screenshots/CylukWa-2.png)
+- Dockploy (PaaS self-hosted, deploys, monitoring, S3, SSL con Let's Encrypt): [Dockploy dashboard](/screenshots/Dockploy-1.png) --- [Dockploy S3 R2](/screenshots/Dockploy-2.png) --- [Dockploy dominio SSL](/screenshots/Dockploy-3.png) --- [Dockploy deploy GitHub](/screenshots/Dockploy-4.png) --- [Dockploy deployments WhatsApp](/screenshots/Dockploy-5.png) --- [Dockploy monitoring](/screenshots/Dockploy-6.png) --- [Dockploy deployments landing](/screenshots/Dockploy-7.png)
+- Infra (Cloudflare DNS proxy, VPS Contabo Ubuntu 24.04): [Cloudflare DNS dokploy](/screenshots/Cloudflare-1.png) --- [VPS Contabo SSH banner](/screenshots/vps-contabo-1.png)
+- Diseno / Diagramacion: [Diagrama UML matricula academica con Stripe](/screenshots/Digrama-use-case-1.png)
+- Scripts personales: [AddHomeWork script de horarios y bloqueos](/screenshots/AddHomeWork-1.png)

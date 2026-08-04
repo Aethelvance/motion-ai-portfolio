@@ -5,8 +5,8 @@ import styles from './HeroCTA.module.css';
 export const HeroCTA = () => {
   return (
     <div className={styles.cta}>
-      <HeroButton variant="primary">DOWNLOAD CV</HeroButton>
-      <HeroButton variant="secondary">CONTACT</HeroButton>
+      <HeroButton variant="primary" href="/cv.pdf" download="cv.pdf">DOWNLOAD CV</HeroButton>
+      <HeroButton variant="secondary" href="/contact">CONTACT</HeroButton>
     </div>
   );
 };
