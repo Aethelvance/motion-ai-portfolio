@@ -1,0 +1,109 @@
+SOBRE LUIS VERASTEGUI:
+
+Nombre completo: Luis Verastegui
+Rol principal: Software Developer & AI Integrator
+Ubicación: Ayacucho Peru
+Email: aethelvance@ingenierodeia.com
+Disponibilidad: Disponible Inmediata
+
+HABILIDADES TÉCNICAS:
+
+Backend:
+- Golang (Go) — APIs REST, webhooks, alto rendimiento
+- Node.js, Python
+
+Frontend:
+- Astro (framework principal)
+- React 19, TypeScript
+- Tailwind CSS, CSS Modules
+- Diseño responsive y accesible
+
+DevOps / DevSecOps:
+- Ubuntu Server, Docker
+- Nftables (firewall, Zero Trust)
+- SSH Ed25519 (autenticación asimétrica)
+- Restic (backups cifrados)
+- Cloudflare R2 / S3
+
+IA / LLMs:
+- Integración de modelos de lenguaje (OpenAI, Anthropic, open source)
+- Tool Calling (JSON Schema)
+- Prompt engineering, system prompts
+- Agentes IA conversacionales
+- RPA (Robotic Process Automation) con IA
+- Workflows automatizados
+
+Scripting y Sistemas:
+- Bash scripting avanzado
+- Arch Linux (uso diario)
+- Automatización de sistemas Linux
+
+PROYECTOS DESTACADOS:
+
+1. DevSecOps / Infraestructura Segura
+   - Servidor VPS blindado con reglas Nftables (DROP silencioso de escaneos/bots)
+   - Autenticación SSH Ed25519
+   - Backups cifrados automáticos a S3/Cloudflare R2 con Restic
+   - Stack: Ubuntu, Docker, Nftables, Cloudflare R2
+
+2. Backend Developer (AI-Assisted)
+   - 2 APIs funcionales en Go: una para WhatsApp (OpenWA), otra para envío de correos
+   - 100% de automatización de notificaciones desde el frontend
+   - Interfaz construida con Astro, React y Tailwind CSS
+   - Stack: Golang, OpenWA, Astro, Webhooks
+
+3. Integrador de IA
+   - Asistente conversacional en terminal para ejecutar comandos guiados (Yuyi, basado en LLM)
+   - Automatización visual (RPA) mediante IA con Tool Calling (JSON)
+   - Sistema de gestión de tareas y rutinas en Bash Scripting
+   - Stack: Arch Linux, Bash, LLM APIs, JSON Tool Calling
+
+PROPUESTA DE VALOR ÚNICA:
+Luis combina:
+- Potencia en backend (Go, sistemas de alto rendimiento)
+- Velocidad visual en frontend (Astro, diseño moderno)
+- Expertise real en IA aplicada (no solo demos, sino integraciones en producción)
+- Mentalidad DevSecOps (seguridad desde el diseño, no como parche)
+- Autonomía total (sistemas que funcionan sin supervisión constante)
+
+Es el tipo de desarrollador que:
+- Automatiza lo aburrido
+- Construye sistemas, no features aislados
+- Documenta y deja las cosas mejor de como las encontró
+- Aprende rápido y aplica inmediatamente
+
+EXPERIENCIA:
+- 2+ años en desarrollo de software
+- 3+ proyectos completados
+- Stack diverso: desde infraestructura hasta UX
+
+DISPONIBLE PARA:
+- Proyectos freelance / consultoría
+- Posiciones full-time o part-time
+- Colaboraciones técnicas
+- Charlas o workshops sobre IA + desarrollo
+
+CONTACTO:
+- Email: aethelvance@ingenierodeia.com
+- Respuesta en menos de 24 horas
+- GitHub, LinkedIn, portfolio disponibles bajo solicitud
+
+Enlaces que puedes pasar de apoyo:
+-Introduction to Neural Networks and PyTorch Link (https://coursera.org/share/467c702fb0e4ad52e053fbf7b3cf10dc)
+-Deep Learning with PyTorch Link (https://coursera.org/share/db8d981713f3168dcbca5c018e2af83a)
+-Machine Learning with Python Link (https://coursera.org/share/7052c58c0c7bb349f32be8fc4c104859)
+-Github Link (https://github.com/Aethelvance)
+-Proyecto de toolcalling en minecraft (https://github.com/Aethelvance/minecraft-tool-calling-agent)
+-Puedes adjuntar los certificados para dar mayor valides
+
+Imagenes
+-Machine Learning with Python Certificado (/MachineLearningwithPython.png)
+
+Documentos y PDFs
+-Formato: [descripcion del documento](https://url/archivo.pdf) → se renderiza como link que abre el PDF en nueva pestaña
+-Ejemplo: [CV completo de Luis Verastegui](https://tudominio.com/cv.pdf)
+-Cuando el reclutador pida ver el CV, portafolio, certificaciones formales o cualquier documento, usa este formato para que pueda abrirlo directamente en su navegador
+-Lista de PDFs disponibles:
+  - [Certificado Machine Learning with Python](/MachineLearningWithPython.pdf)
+  - [Certificado Introduction to Neural Networks and PyTorch](/IntroductionToNeuralNetworksAndPyTorch.pdf)
+  - [Certificado Deep Learning with PyTorch](/CourseraDeepLearningWithPyTorch.pdf)

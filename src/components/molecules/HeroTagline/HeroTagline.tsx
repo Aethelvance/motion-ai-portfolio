@@ -6,7 +6,7 @@ export const HeroTagline = () => {
     <div className={styles.tagline}>
       <div className={styles.sub}>
         <div className={styles.line} />
-        <span>EXPERIENCE THE EXTRAORDINARY</span>
+        <span>SOFTWARE DEVELOPER & AI INTEGRATOR</span>
         <div className={styles.line} />
       </div>
     </div>

@@ -1,0 +1,48 @@
+/* Floating AI assistant bubble + chat window. Fixed bottom-left, opens on click. */
+.bubble {
+  animation: bubbleGlow 3s ease-in-out infinite;
+}
+
+.bubble:hover {
+  animation-play-state: paused;
+}
+
+@keyframes bubbleGlow {
+  0%,
+  100% {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 28px rgba(157, 78, 221, 0.35);
+  }
+}
+
+.window {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.messages {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.bubbleUser {
+  border-bottom-right-radius: 4px;
+}
+
+.bubbleAssistant {
+  border-bottom-left-radius: 4px;
+}

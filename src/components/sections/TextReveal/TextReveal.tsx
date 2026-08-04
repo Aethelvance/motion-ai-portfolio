@@ -4,7 +4,7 @@ import { useSectionProgress } from '@/hooks/useSectionProgress';
 import styles from './TextReveal.module.css';
 
 const TEXT =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
+  'Desarrollador de Software especializado en Integración de IA, Infraestructura Cloud y Frontend moderno. Apasionado por Linux, automatización y sistemas de alto rendimiento, combinando potencia en backend con Golang y velocidad visual con Astro.';
 
 const COLOR_HIDDEN = 'var(--border)';
 const COLOR_ACTIVE = 'var(--cyan)';

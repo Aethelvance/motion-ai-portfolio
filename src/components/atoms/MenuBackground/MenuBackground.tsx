@@ -19,7 +19,7 @@ const variants = {
     backgroundColor: 'var(--surface-elevated)',
   },
   closing: {
-    backgroundColor: 'var(--accent-blue)',
+    backgroundColor: 'var(--primary)',
   },
 };
 
@@ -39,7 +39,7 @@ export const MenuBackground = ({ status }: MenuBackgroundProps) => {
               ? { y: '-152%', rotate: -45, backgroundColor: 'var(--surface-elevated)' }
               : status === 'opening' || status === 'open'
                 ? { y: '30%', rotate: -45, backgroundColor: 'var(--surface-elevated)' }
-                : { y: '-113%', rotate: -45, backgroundColor: 'var(--accent-blue)' }
+                : { y: '-113%', rotate: -45, backgroundColor: 'var(--primary)' }
           }
           transition={{ duration: 0.8, ease: power4EaseInOut }}
         />
@@ -52,7 +52,7 @@ export const MenuBackground = ({ status }: MenuBackgroundProps) => {
               ? { scaleY: 0, rotate: -45, backgroundColor: 'var(--surface-elevated)' }
               : status === 'opening' || status === 'open'
                 ? { scaleY: 1, rotate: -45, backgroundColor: 'var(--surface-elevated)' }
-                : { scaleY: 0, rotate: -45, backgroundColor: 'var(--accent-blue)' }
+                : { scaleY: 0, rotate: -45, backgroundColor: 'var(--primary)' }
           }
           transition={{ duration: 0.8, ease: power4EaseInOut }}
         />
@@ -65,7 +65,7 @@ export const MenuBackground = ({ status }: MenuBackgroundProps) => {
               ? { y: '25%', rotate: -45, backgroundColor: 'var(--surface-elevated)' }
                 : status === 'opening' || status === 'open'
                 ? { y: '-140%', rotate: -45, backgroundColor: 'var(--surface-elevated)' }
-                : { y: '23%', rotate: -45, backgroundColor: 'var(--accent-blue)' }
+                : { y: '23%', rotate: -45, backgroundColor: 'var(--primary)' }
           }
           transition={{ duration: 0.8, ease: power4EaseInOut }}
         />

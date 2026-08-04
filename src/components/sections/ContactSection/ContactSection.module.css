@@ -1,0 +1,58 @@
+/* Scroll-triggered fade-in for the contact blocks. The .visible class is added by the IntersectionObserver inside the component (using the same scoped class name). */
+.contactElement {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contactElement.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Per-word hover lift + color shift on the headline. */
+.hoverTrigger {
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.3s ease;
+}
+
+.hoverTrigger:hover {
+  transform: translateY(-2px);
+  color: var(--text-secondary);
+}
+
+/* Slow ambient orbs behind the section. */
+@keyframes pulseSlow {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulseSlower {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(0.98);
+  }
+}
+
+.animatePulseSlow {
+  animation: pulseSlow 8s ease-in-out infinite;
+}
+
+.animatePulseSlower {
+  animation: pulseSlower 12s ease-in-out infinite;
+}

@@ -23,16 +23,16 @@ export function TailwindSection() {
     >
       <div className={styles.typeRiver}>
         <motion.div style={{ x: lineOne }}>
-          UTILITY FIRST / PRECISION / UTILITY FIRST /
+          LLM INTEGRATION / TOOL CALLING /
         </motion.div>
         <motion.div className={styles.outline} style={{ x: lineTwo }}>
-          RAPIDEZ / SISTEMA / RAPIDEZ / SISTEMA /
+          PROMPT ENGINEERING / WORKFLOWS /
         </motion.div>
         <motion.div style={{ x: lineThree }}>
-          VELOCIDAD / CONSISTENCIA / VELOCIDAD /
+          AGENTES IA / LLM AGENTS /
         </motion.div>
         <motion.div className={styles.outline} style={{ x: lineFour }}>
-          RENDIMIENTO / ESCALA / RENDIMIENTO /
+          SYSTEM PROMPTS / JSON TOOL CALLING /
         </motion.div>
       </div>
     </section>

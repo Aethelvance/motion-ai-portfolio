@@ -4,5 +4,5 @@ import type { MenuItem } from '@/components/molecules/MenuList/MenuList';
 export const MENU_ITEMS: MenuItem[] = [
   { label: 'CV', href: '/cv' },
   { label: 'SOBRE ESTA WEB', href: '/sobre-esta-web' },
-  { label: 'LABORATORIO', href: '/laboratorio' },
+  { label: 'CONTACT', href: '/contact' },
 ];

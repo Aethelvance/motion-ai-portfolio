@@ -5,6 +5,8 @@ import TwindInit from '@/components/providers/TwindInit.astro';
 import SmoothScroll from '@/components/providers/SmoothScroll.astro';
 import HamburgerMenu from '@/components/organisms/HamburgerMenu/HamburgerMenu';
 import SideNav from '@/components/molecules/SideNav/SideNav';
+import Footer from '@/components/organisms/Footer/Footer';
+import AIAssistant from '@/components/organisms/AIAssistant/AIAssistant';
 
 export interface Props {
   title?: string;
@@ -35,5 +37,7 @@ const { title = 'Ingeniero de IA', currentPath } = Astro.props;
     <HamburgerMenu currentPath={currentPath} client:load />
     <SideNav client:load />
     <slot />
+    <Footer client:load />
+    <AIAssistant client:load />
   </body>
 </html>

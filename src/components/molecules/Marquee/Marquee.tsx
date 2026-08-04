@@ -3,14 +3,21 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import styles from './Marquee.module.css';
 
 const ITEMS = [
-  'suavidad',
-  'inercia',
-  '60 fps',
-  'easing',
-  'compositor',
-  'parallax',
-  'lerp 0.09',
-  'gpu',
+  'GOLANG',
+  'ARCH LINUX',
+  'DEVSECOPS',
+  'LLM INTEGRATION',
+  'DOCKER',
+  'ASTRO',
+  'TOOL CALLING',
+  'NFTABLES',
+  'BASH',
+  'RESTIC',
+  'OPENWA',
+  'WEBHOOKS',
+  'RPA AUTOMATION',
+  'TAILWIND CSS',
+  'UBUNTU SERVER',
 ] as const;
 
 const SECONDS_PER_ROW = 15;

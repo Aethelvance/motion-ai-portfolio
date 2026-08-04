@@ -10,48 +10,72 @@ type Layer = {
   code: string[];
   accent: string;
   cardBg: string;
+  fileName?: string;
 };
 
 const layers: Layer[] = [
   {
     step: '01',
-    title: 'Lorem',
-    stack: 'Lorem v1.0',
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    bullets: ['Lorem ipsum dolor sit', 'Consectetur adipiscing elit', 'Sed do eiusmod tempor'],
-    code: ['const lorem = {', '  ipsum: "dolor",', '  sit: "amet",', '}'],
+    title: 'DevSecOps',
+    stack: 'Ubuntu · Docker · Nftables · R2',
+    desc: 'Rol: Arquitecto / DevSecOps.',
+    bullets: [
+      'VPS blindado con Nftables (DROP silencioso de escaneos)',
+      'SSH Ed25519, 0% riesgo de fuerza bruta',
+      'Backups cifrados a R2 con Restic',
+    ],
+    code: [
+      'table inet filter {',
+      '  policy drop',
+      '  # Zero Trust',
+      '  tcp dport 1453 rate 6/m drop',
+      '  iif "eth0" drop',
+      '}',
+    ],
     accent: 'var(--error)',
     cardBg: 'var(--card-bg-error)',
+    fileName: 'firewall.nft',
   },
   {
     step: '02',
-    title: 'Ipsum',
-    stack: 'Ipsum v2.0',
-    desc: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    bullets: ['Duis aute irure dolor', 'In reephenderit voluptate', 'Velit esse cillum dolore'],
-    code: ['function ipsum() {', '  return "dolor";', '}', ''],
+    title: 'Backend',
+    stack: 'Golang · OpenWA · Astro · Webhooks',
+    desc: 'Rol: Backend Developer (AI-Assisted).',
+    bullets: [
+      '2 APIs funcionales en Go (WhatsApp y correo)',
+      '100% automatización de notificaciones',
+      'UI en Astro, React y Tailwind CSS',
+    ],
+    code: [
+      '{',
+      '  "status": "ok",',
+      '  "service": "wa-api"',
+      '}',
+    ],
     accent: 'var(--accent-blue)',
     cardBg: 'var(--card-bg-accent-blue)',
+    fileName: 'health.json',
   },
   {
     step: '03',
-    title: 'Dolor',
-    stack: 'Dolor v3.0',
-    desc: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    bullets: ['Cillum dolore eu fugiat', 'Nulla pariatur excepteur', 'Sunt in culpa qui officia'],
-    code: ['import { lorem }', '  from "ipsum";', '', ''],
+    title: 'IA',
+    stack: 'Arch Linux · Bash · LLM APIs · JSON',
+    desc: 'Rol: Integrador de IA.',
+    bullets: [
+      'Asistente conversacional en terminal para comandos guiados',
+      'Automatización visual (RPA) con Tool Calling JSON',
+      'Gestión de tareas y rutinas en Bash Scripting',
+    ],
+    code: [
+      '# Zsh hook: IA en command_not_found',
+      'command_not_found_handler() {',
+      '  local res=$(_llamar_ia "$1")',
+      '  echo -e "\e[35m${res:-?}\e[0m"',
+      '}',
+    ],
     accent: 'var(--cyan)',
     cardBg: 'var(--card-bg-cyan)',
-  },
-  {
-    step: '04',
-    title: 'Sit',
-    stack: 'Sit v4.0',
-    desc: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.',
-    bullets: ['Natus error sit voluptatem', 'Accusantium doloremque', 'Laudantium totam rem'],
-    code: ['export default', '  function () {', '    return lorem;', '  }'],
-    accent: 'var(--success)',
-    cardBg: 'var(--card-bg-success)',
+    fileName: 'yuyi.zsh',
   },
 ];
 
@@ -160,7 +184,7 @@ function DeckCard({
               <span className="h-2 w-2 rounded-full bg-white/20" />
               <span className="h-2 w-2 rounded-full bg-white/20" />
               <span className="ml-3 font-mono text-[10px] text-text-secondary">
-                {layer.title.toLowerCase()}.ts
+                {layer.fileName ?? `${layer.title.toLowerCase()}.ts`}
               </span>
             </div>
             <pre className="font-mono text-[12.5px] leading-[1.9] text-text-secondary">
