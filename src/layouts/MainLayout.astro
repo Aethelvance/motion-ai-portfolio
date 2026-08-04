@@ -32,6 +32,11 @@ const { title = 'Ingeniero de IA', currentPath } = Astro.props;
     />
     <TwindInit />
     <SmoothScroll />
+    <!-- Disable browser's automatic scroll restoration so every reload starts at the top. This keeps the SideNav's IntersectionObserver in sync with the actual scroll position. -->
+    <script is:inline>
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+    </script>
   </head>
   <body class="min-h-screen bg-base text-text-primary font-sans antialiased">
     <HamburgerMenu currentPath={currentPath} client:load />

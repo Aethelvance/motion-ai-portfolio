@@ -8,15 +8,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PORT = Number(process.env.PORT) || 3001;
 const API_KEY = process.env.LLM_API_KEY;
-const BASE_URL = process.env.LLM_BASE_URL || 'https://api.openai.com/v1';
-const MODEL = process.env.LLM_MODEL || 'gpt-3.5-turbo';
+const BASE_URL = process.env.LLM_BASE_URL || 'https://openrouter.ai/api/v1';
+const MODEL = process.env.LLM_MODEL || 'google/gemma-4-26b-a4b-it';
 const SITE_URL = process.env.SITE_URL || 'http://localhost:4321';
 
 const personality = readFileSync(join(__dirname, 'personality.txt'), 'utf-8');
 const mission = readFileSync(join(__dirname, 'mission.txt'), 'utf-8');
 const aboutMe = readFileSync(join(__dirname, 'about-me.txt'), 'utf-8');
+const examples = readFileSync(join(__dirname, 'examples.txt'), 'utf-8');
 // Resolve relative markdown link paths (/foo.png) against SITE_URL so the AI can use short paths in about-me.txt without hardcoding the domain.
-const systemPrompt = `${personality}\n\n---\n\n${mission}\n\n---\n\n${aboutMe}`.replace(
+const systemPrompt = `${personality}\n\n---\n\n${mission}\n\n---\n\n${examples}\n\n---\n\n${aboutMe}`.replace(
   /\]\((\/[^)]+)\)/g,
   `](${SITE_URL}$1)`,
 );

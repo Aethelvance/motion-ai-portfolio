@@ -1,9 +1,11 @@
 // Floating AI assistant: a bubble in the bottom-left corner that opens a small chat window. State and conversation are shared with the full YuyiChatSection via the global yuyiStore. The floating UI auto-hides when the full Yuyi AI section is in the viewport, and reappears when the user scrolls away from it.
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Plus } from 'lucide-react';
 import { useYuyiStore, yuyiStore } from '@/components/providers/yuyiStore';
-import { renderRichText } from './renderRichText';
+import { AssistantMessage } from './AssistantMessage';
+import { useAnimateLastMessage } from './useAnimateLastMessage';
+import { useNestedScroll } from '@/hooks/useNestedScroll';
 import styles from './AIAssistant.module.css';
 
 const YuyiIcon = () => (
@@ -17,7 +19,10 @@ const YuyiIcon = () => (
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { messages, isLoading, input, currentChatId } = useYuyiStore();
+  const shouldAnimate = useAnimateLastMessage(messages, currentChatId);
+  useNestedScroll(messagesContainerRef);
 
   // Hide the floating UI when the full YuyiChatSection is in the viewport; show it again when the user scrolls away.
   useEffect(() => {
@@ -72,25 +77,33 @@ export default function AIAssistant() {
               </div>
             </div>
 
-            <div className={`flex-1 space-y-3 overflow-y-auto p-4 ${styles.messages}`}>
-              {messages.map((msg, i) => (
-                <div
-                  key={`${currentChatId}_${i}`}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed ${
-                      msg.role === 'user'
-                        ? `bg-primary text-base ${styles.bubbleUser}`
-                        : `bg-surface-elevated text-text-primary ${styles.bubbleAssistant}`
-                    }`}
-                  >
-                    {msg.role === 'assistant' ? renderRichText(msg.text) : msg.text}
-                  </div>
-                </div>
-              ))}
+            <div ref={messagesContainerRef} className={`flex-1 overflow-y-auto p-4 ${styles.messages}`}>
+              {messages.map((msg, i) => {
+                const key = `${currentChatId}_${i}`;
+                const isConsecutive = i > 0 && messages[i - 1].role === msg.role;
+                const marginClass = isConsecutive ? 'mt-1' : 'mt-3';
+                if (msg.role === 'user') {
+                  return (
+                    <div key={key} className={`flex justify-end ${marginClass}`}>
+                      <div className={`max-w-[85%] whitespace-pre-wrap rounded-2xl bg-primary px-3 py-2 text-sm leading-relaxed text-base ${styles.bubbleUser}`}>
+                        {msg.text}
+                      </div>
+                    </div>
+                  );
+                }
+                return (
+                  <AssistantMessage
+                    key={key}
+                    text={msg.text}
+                    animate={shouldAnimate(i)}
+                    variant="floating"
+                    className={styles.bubbleAssistant}
+                    isConsecutive={isConsecutive}
+                  />
+                );
+              })}
               {isLoading && (
-                <div className="flex justify-start">
+                <div className="mt-3 flex justify-start">
                   <div className={`rounded-2xl bg-surface-elevated px-4 py-3 ${styles.bubbleAssistant}`}>
                     <div className="flex gap-1">
                       <span className="h-2 w-2 animate-bounce rounded-full bg-text-secondary" style={{ animationDelay: '0ms' }} />

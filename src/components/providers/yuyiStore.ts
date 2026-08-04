@@ -1,6 +1,14 @@
 // Global store for the Yuyi AI chat with multi-session support and localStorage persistence. Uses a vanilla store + useSyncExternalStore so the conversation is shared between the floating bubble and the full chat section even though they are separate React islands.
 import { useSyncExternalStore } from 'react';
 
+interface ImportMetaEnv {
+  readonly PUBLIC_API_URL?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 export interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
@@ -26,6 +34,10 @@ const INITIAL_MESSAGE: ChatMessage = {
   role: 'assistant',
   text: 'Hola, soy Yuyi AI, el asistente de Luis Verastegui. ¿En qué puedo ayudarte?',
 };
+
+const API_URL: string =
+  (import.meta.env?.PUBLIC_API_URL as string | undefined)?.replace(/\/$/, '') ||
+  'http://localhost:3001';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -180,7 +192,7 @@ class YuyiStore {
     for (const l of this.listeners) l();
 
     try {
-      const res = await fetch('http://localhost:3001/api/chat', {
+      const res = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

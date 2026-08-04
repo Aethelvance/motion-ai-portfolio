@@ -2,12 +2,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Send, Plus, MessageSquare, Trash2, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useYuyiStore, yuyiStore, type ChatSession } from '@/components/providers/yuyiStore';
-import { renderRichText } from '@/components/organisms/AIAssistant/renderRichText';
+import { AssistantMessage } from '@/components/organisms/AIAssistant/AssistantMessage';
+import { useAnimateLastMessage } from '@/components/organisms/AIAssistant/useAnimateLastMessage';
+import { useNestedScroll } from '@/hooks/useNestedScroll';
 
 export default function YuyiChatSection() {
   const { messages, isLoading, input, chats, currentChatId } = useYuyiStore();
   const messagesRef = useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const shouldAnimate = useAnimateLastMessage(messages, currentChatId);
+  useNestedScroll(messagesRef);
 
   useEffect(() => {
     if (messagesRef.current) {
@@ -72,12 +76,32 @@ export default function YuyiChatSection() {
 
               <div
                 ref={messagesRef}
-                className="h-[60vh] space-y-4 overflow-y-auto p-6"
+                className="h-[60vh] overflow-y-auto p-6"
                 style={{ scrollbarWidth: 'thin' }}
               >
-                {messages.map((msg, i) => (
-                  <MessageBubble key={i} msg={msg} />
-                ))}
+                {messages.map((msg, i) => {
+                  const key = `${currentChatId}_${i}`;
+                  const isConsecutive = i > 0 && messages[i - 1].role === msg.role;
+                  const marginClass = isConsecutive ? 'mt-1' : 'mt-4';
+                  if (msg.role === 'user') {
+                    return (
+                      <div key={key} className={`flex justify-end ${marginClass}`}>
+                        <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl bg-primary px-4 py-3 text-sm leading-relaxed text-base">
+                          {msg.text}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return (
+                    <AssistantMessage
+                      key={key}
+                      text={msg.text}
+                      animate={shouldAnimate(i)}
+                      variant="fullpage"
+                      isConsecutive={isConsecutive}
+                    />
+                  );
+                })}
                 {isLoading && <TypingIndicator />}
               </div>
 
@@ -128,6 +152,9 @@ function ChatSidebar({
   currentChatId: string | null;
   isOpen: boolean;
 }) {
+  const historyRef = useRef<HTMLDivElement>(null);
+  useNestedScroll(historyRef);
+
   return (
     <aside
       className={`shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-out ${
@@ -144,7 +171,7 @@ function ChatSidebar({
           New chat
         </button>
 
-        <div className="-mx-1 flex-1 overflow-y-auto px-1">
+        <div ref={historyRef} className="-mx-1 flex-1 overflow-y-auto px-1">
           <p className="px-2 pb-2 pt-1 font-mono text-[10px] uppercase tracking-widest text-text-secondary/60">
             Historial
           </p>
@@ -184,25 +211,9 @@ function ChatSidebar({
   );
 }
 
-function MessageBubble({ msg }: { msg: { role: 'user' | 'assistant'; text: string } }) {
-  return (
-    <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-      <div
-        className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-          msg.role === 'user'
-            ? 'bg-primary text-base'
-            : 'bg-surface-elevated text-text-primary border border-border'
-        }`}
-      >
-        {msg.role === 'assistant' ? renderRichText(msg.text) : msg.text}
-      </div>
-    </div>
-  );
-}
-
 function TypingIndicator() {
   return (
-    <div className="flex justify-start">
+    <div className="mt-4 flex justify-start">
       <div className="rounded-2xl border border-border bg-surface-elevated px-4 py-3">
         <div className="flex gap-1">
           <span className="h-2 w-2 animate-bounce rounded-full bg-text-secondary" style={{ animationDelay: '0ms' }} />

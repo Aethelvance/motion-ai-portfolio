@@ -1,0 +1,46 @@
+# docker-compose.yml for Dokploy (and any docker compose compatible host).
+# Two services: web (nginx + Astro static) and api (Node.js Yuyi backend).
+# The web container proxies /api/* to the api container. The browser only talks to the web origin.
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        # In production this should be the public site URL so relative paths in the
+        # api's system prompt resolve correctly. The api uses SITE_URL for this.
+        PUBLIC_API_URL: /api
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+    networks:
+      - cv-net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    # No public ports — the api is only reachable from the web container through the
+    # internal docker network (see CV_NET below).
+    expose:
+      - "3001"
+    environment:
+      LLM_API_KEY: ${LLM_API_KEY:?Set LLM_API_KEY in .env}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://openrouter.ai/api/v1}
+      LLM_MODEL: ${LLM_MODEL:-google/gemma-4-26b-a4b-it}
+      # Public site URL used by the server to resolve relative paths in markdown
+      # (e.g. /certs/aws.png -> https://yoursite.com/certs/aws.png). Set to the
+      # public URL of the web service in production.
+      SITE_URL: ${SITE_URL:-http://localhost}
+      PORT: 3001
+    networks:
+      - cv-net
+
+networks:
+  cv-net:
+    driver: bridge

@@ -1,9 +1,10 @@
 // Footer: keeps the lower half of the original design (description, email, nav, social, location, metrics, bottom bar) and discards the top blocks (HABLEMOS headline, magnetic CTAs, marquee). All colors mapped to the project palette tokens.
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { Infinity } from 'lucide-react';
 import styles from './Footer.module.css';
 
-const EMAIL = 'hola@verastegui.dev';
+const EMAIL = 'aethelvance@ingenierodeia.com';
 const RADIUS = 21;
 const CIRC = 2 * Math.PI * RADIUS;
 
@@ -119,7 +120,7 @@ export default function Footer() {
           hour: '2-digit',
           minute: '2-digit',
           hour12: false,
-          timeZone: 'Europe/Madrid',
+          timeZone: 'America/Lima',
         }).format(new Date())
       );
     update();
@@ -166,8 +167,7 @@ export default function Footer() {
         <div className="mt-auto grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-4">
             <p className="max-w-xs text-sm leading-relaxed text-text-secondary">
-              Estudio independiente de diseño y desarrollo digital. Detalle macro para impactar,
-              detalle micro para emocionar.
+              AI Engineer & Software Developer especializado en integrar LLMs, automatizar infra y construir sistemas que escalan sin supervisión.
             </p>
             <button onClick={copyEmail} className="group mt-6 flex items-center gap-3 text-left">
               <span className="relative overflow-hidden font-mono text-lg font-semibold md:text-xl">
@@ -192,48 +192,49 @@ export default function Footer() {
           <nav className="md:col-span-2">
             <h3 className="mb-4 text-[10px] uppercase tracking-[0.35em] text-text-secondary/60">Menú</h3>
             <ul>
-              <FancyLink label="Inicio" index={1} />
-              <FancyLink label="Trabajo" index={2} />
-              <FancyLink label="Servicios" index={3} />
-              <FancyLink label="Estudio" index={4} />
-              <FancyLink label="Contacto" index={5} />
+              <FancyLink label="CV" href="/cv" index={1} />
+              <FancyLink label="Contacto" href="/contact" index={2} />
             </ul>
           </nav>
 
           <nav className="md:col-span-3">
             <h3 className="mb-4 text-[10px] uppercase tracking-[0.35em] text-text-secondary/60">Redes</h3>
             <ul>
-              <FancyLink label="Instagram" href="https://instagram.com" index={1} />
-              <FancyLink label="Behance" href="https://behance.net" index={2} />
-              <FancyLink label="Dribbble" href="https://dribbble.com" index={3} />
-              <FancyLink label="LinkedIn" href="https://linkedin.com" index={4} />
-              <FancyLink label="X / Twitter" href="https://x.com" index={5} />
+              <FancyLink label="GitHub" href="https://github.com/aethelvance" index={1} />
+              <FancyLink label="LinkedIn" href="https://linkedin.com/in/aethelvance" index={2} />
             </ul>
           </nav>
 
           <div className="md:col-span-3">
             <h3 className="mb-4 text-[10px] uppercase tracking-[0.35em] text-text-secondary/60">Ubicación</h3>
-            <p className="text-sm font-medium text-text-primary">Madrid, España</p>
+            <p className="text-sm font-medium text-text-primary">Ayacucho, Perú</p>
             <p className="mt-1 inline-flex cursor-default font-mono text-[11px] text-text-secondary transition-colors duration-300 hover:text-cyan">
-              40.4168° N · 3.7038° W
+              13.1588° S · 74.2232° W
             </p>
             <p className="mt-4 flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-text-secondary">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan" />
               Hora local {clock}
             </p>
-            <p className="mt-1 font-mono text-[10px] text-text-secondary/50">UTC+1 / CET</p>
+            <p className="mt-1 font-mono text-[10px] text-text-secondary/50">UTC-5 / PET</p>
           </div>
         </div>
 
         <div className="mt-12 grid grid-cols-3 divide-x divide-border border-t border-border pt-8 md:mt-14">
           {[
-            { to: 120, suffix: '+', label: 'Proyectos' },
-            { to: 98, suffix: '%', label: 'Clientes felices' },
-            { to: 9, suffix: '', label: 'Años de oficio' },
+            { to: 3, prefix: '+', label: 'Proyectos' },
+            { icon: true, label: 'Buscando retos' },
+            { to: 2, prefix: '+', label: 'Años de oficio' },
           ].map((s) => (
             <div key={s.label} className="flex flex-col items-center gap-1 px-2 text-center">
-              <span className="font-mono text-3xl font-bold md:text-5xl">
-                <Counter to={s.to} suffix={s.suffix} />
+              <span className="font-mono text-3xl font-bold text-text-primary md:text-5xl">
+                {s.icon ? (
+                  <Infinity className="h-8 w-8 md:h-12 md:w-12" strokeWidth={1.5} />
+                ) : (
+                  <>
+                    {s.prefix}
+                    <Counter to={s.to!} />
+                  </>
+                )}
               </span>
               <span className="text-[9px] uppercase tracking-[0.3em] text-text-secondary md:text-[10px]">
                 {s.label}

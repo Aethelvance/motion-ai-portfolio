@@ -100,10 +100,6 @@ Imagenes
 -Machine Learning with Python Certificado (/MachineLearningwithPython.png)
 
 Documentos y PDFs
--Formato: [descripcion del documento](https://url/archivo.pdf) → se renderiza como card con preview y botón de descarga
--Ejemplo: [CV de Luis Verastegui](https://tudominio.com/cv.pdf)
--IMPORTANTE: usa labels CONCISOS (2-5 palabras maximo). Nada de guiones, rayas, ni separadores. Solo el nombre del documento.
--Cuando el reclutador pida ver el CV, portafolio, certificaciones formales o cualquier documento, usa este formato
 -Lista de PDFs disponibles:
   - [CV de Luis Verastegui](/cv.pdf)
   - [Certificado Machine Learning with Python](/MachineLearningWithPython.pdf)
