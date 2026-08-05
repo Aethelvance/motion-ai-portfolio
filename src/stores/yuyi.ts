@@ -58,6 +58,15 @@ const API_URL: string =
   (import.meta.env?.PUBLIC_API_URL as string | undefined)?.replace(/\/$/, '') ||
   'http://localhost:3001';
 
+// Resolve the chat endpoint. In dev, PUBLIC_API_URL is unset and API_URL falls back
+// to an absolute origin (http://localhost:3001), so the chat path is /api/chat. In
+// production, PUBLIC_API_URL is the relative path nginx proxies (e.g. /api), so the
+// chat path is just /chat. Detecting this with a regex avoids the historical bug
+// where `/api` + literal `/api/chat` produced the doubled `/api/api/chat` URL.
+const CHAT_URL = /^(https?:|\/\/)/.test(API_URL)
+  ? `${API_URL}/api/chat`
+  : `${API_URL}/chat`;
+
 const isBrowser = typeof window !== 'undefined';
 
 function loadFromStorage(): { chats: ChatSession[]; currentChatId: string | null } {
@@ -228,7 +237,7 @@ class YuyiStore {
     for (const l of this.listeners) l();
 
     try {
-      const res = await fetch(`${API_URL}/api/chat`, {
+      const res = await fetch(CHAT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
