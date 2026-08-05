@@ -24,6 +24,17 @@ ENV PUBLIC_API_URL=${PUBLIC_API_URL}
 
 RUN pnpm build
 
+# Diagnostic: list the build output so the deploy log shows exactly what `pnpm build` produced.
+# This layer is intentionally not in cache: touching /tmp breaks cache and forces re-run.
+# Will be removed once the deploy is verified working. (status: pending)
+RUN echo "=== pnpm build output ===" \
+    && ls -la /app/dist/ \
+    && echo "=== html files ===" \
+    && find /app/dist -name "*.html" -type f \
+    && echo "=== index.html size ===" \
+    && wc -c /app/dist/index.html 2>/dev/null || echo "NO index.html" \
+    && echo "=== end diagnostic ==="
+
 # Runtime: serve dist/ with nginx and proxy /api/* to the api service.
 # NOTE: runs as root intentionally. nginx is the only process in this container,
 # needs to bind port 80 (privileged), and the official nginx:alpine image creates
