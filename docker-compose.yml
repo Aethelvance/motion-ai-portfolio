@@ -21,11 +21,19 @@ services:
         PUBLIC_API_URL: /api
     container_name: cv-frontbackendbasic-jy2iiv-web
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:${PORT_WEB:-4321}"
     expose:
-      - "80"
-    # Liveness probe: nginx serves the static index.html (Astro redirects / to /cv).
+      - "${PORT_WEB:-4321}"
+    environment:
+      # Pass the port as NGINX_PORT for the official nginx:alpine template's
+      # envsubst to substitute into the listen directive.
+      NGINX_PORT: ${PORT_WEB:-4321}
+      # The api container's listen port (used in proxy_pass http://api:${NGINX_API_PORT}).
+      NGINX_API_PORT: ${PORT_API:-3000}
+    # Liveness probe: nginx serves the static index.html.
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/index.html"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT_WEB:-4321}/index.html"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -46,7 +54,7 @@ services:
     # No public ports — the api is only reachable from the web container through the
     # internal docker network (see CV_NET below).
     expose:
-      - "3001"
+      - "${PORT_API:-3000}"
     environment:
       LLM_API_KEY: ${LLM_API_KEY:?Set LLM_API_KEY in .env}
       LLM_BASE_URL: ${LLM_BASE_URL:-https://openrouter.ai/api/v1}
@@ -63,10 +71,12 @@ services:
       # Max request body size (bytes). Default 1 MiB; large enough for chat with
       # images, small enough to prevent trivial DoS.
       MAX_BODY_BYTES: ${MAX_BODY_BYTES:-1048576}
-      PORT: 3001
+      # The api code reads process.env.PORT. We pass PORT_API here so the same
+      # env var that configures the web's proxy_pass also configures the api.
+      PORT: ${PORT_API:-3000}
     # Healthcheck: api exposes GET /health
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT_API:-3000}/health"]
       interval: 30s
       timeout: 5s
       retries: 3
