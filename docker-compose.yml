@@ -19,7 +19,10 @@ services:
         # In production this should be the public site URL so relative paths in the
         # api's system prompt resolve correctly. The api uses SITE_URL for this.
         PUBLIC_API_URL: /api
+    container_name: cv-frontbackendbasic-jy2iiv-web
     restart: unless-stopped
+    expose:
+      - "80"
     # Liveness probe: nginx serves the static index.html (Astro redirects / to /cv).
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/index.html"]
@@ -32,11 +35,13 @@ services:
         condition: service_healthy
     networks:
       - cv-net
+      - dokploy-network
 
   api:
     build:
       context: .
       dockerfile: Dockerfile.api
+    container_name: cv-frontbackendbasic-jy2iiv-api
     restart: unless-stopped
     # No public ports — the api is only reachable from the web container through the
     # internal docker network (see CV_NET below).
@@ -72,3 +77,5 @@ services:
 networks:
   cv-net:
     driver: bridge
+  dokploy-network:
+    external: true
