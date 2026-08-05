@@ -10,7 +10,7 @@ const PORT = Number(process.env.PORT) || 3001;
 const API_KEY = process.env.LLM_API_KEY;
 const BASE_URL = process.env.LLM_BASE_URL || 'https://openrouter.ai/api/v1';
 const MODEL = process.env.LLM_MODEL || 'google/gemma-4-26b-a4b-it';
-const SITE_URL = process.env.SITE_URL || 'http://localhost:4321';
+const SITE_URL = process.env.SITE_URL;
 // CORS allowlist. Comma-separated. Use "*" for dev only; in production set to the
 // actual public origin (e.g. "https://yoursite.com"). The api is internal-only in
 // production (no public port), so the proxy at /api/chat enforces the same origin via
@@ -22,6 +22,10 @@ const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES) || 1_048_576; // 1 MiB
 // generating broken markdown links or sending the LLM API key to the wrong host.
 if (!/^https:\/\//.test(BASE_URL)) {
   console.error(`FATAL: LLM_BASE_URL must use https:// (got: ${BASE_URL})`);
+  process.exit(1);
+}
+if (!SITE_URL) {
+  console.error('FATAL: SITE_URL is not set. Define it in .env (e.g. SITE_URL=https://your-domain.com).');
   process.exit(1);
 }
 if (!/^https?:\/\//.test(SITE_URL)) {
@@ -91,6 +95,16 @@ const server = createServer(async (req, res) => {
 
   if (req.method === 'GET' && req.url === '/health') {
     return send(res, 200, JSON.stringify({ ok: true, model: MODEL }), {
+      'Content-Type': 'application/json',
+    });
+  }
+
+  // Chat-specific liveness probe. Lighter than /health (no model name), intended for
+  // uptime checks and load balancer health endpoints mounted under the chat route.
+  // Does not call the LLM; it only confirms the Node process is up and the chat
+  // route handler is reachable.
+  if (req.method === 'GET' && req.url === '/api/chat/healthz') {
+    return send(res, 200, JSON.stringify({ ok: true, status: 'active' }), {
       'Content-Type': 'application/json',
     });
   }

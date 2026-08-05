@@ -1,7 +1,7 @@
 // Full-viewport ChatGPT-like chat interface for Yuyi AI. Sidebar with chat history on the
 // left, main area on the right with a top bar, centered messages column, and a
 // bottom-pinned input. Shares state with the floating AIAssistant bubble via yuyiStore
-// (the bubble is suppressed on this page; it only appears on /cv and /contact).
+// (the bubble is suppressed on this page; it only appears on / and /contact).
 // Suggested prompt cards appear on a fresh chat to bootstrap the conversation.
 import { useEffect, useRef, useState, type ChangeEvent, type ClipboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';

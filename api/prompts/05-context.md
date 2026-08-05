@@ -6,11 +6,11 @@ Referencia técnica para responder preguntas de reclutadores sobre el sitio. Dir
 Portfolio / CV personal de Luis Verastegui. Sitio estático (Astro) + backend Node con IA conversacional (Yuyi, la que te está hablando ahora mismo).
 
 ## Rutas
-- `/` → redirect a `/cv`
-- `/cv` → portfolio principal
+- `/` → portfolio principal (CV)
+- `/yuyi` → chat full-page
 - `/contact` → página de contacto
 
-## Secciones de `/cv` (en orden de scroll)
+## Secciones de `/` (en orden de scroll)
 1. **Hero** — presentación, CTAs, fondo animado.
 2. **Marquee** — marquee de skills/tecnologías.
 3. **TestSections** — secciones de prueba.

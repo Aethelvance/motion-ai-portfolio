@@ -192,7 +192,7 @@ export default function Footer() {
           <nav className="md:col-span-2">
             <h3 className="mb-4 text-[10px] uppercase tracking-[0.35em] text-text-secondary/60">Menú</h3>
             <ul>
-              <FancyLink label="CV" href="/cv" index={1} />
+              <FancyLink label="CV" href="/" index={1} />
               <FancyLink label="Yuyi AI" href="/yuyi" index={2} />
               <FancyLink label="Contacto" href="/contact" index={3} />
             </ul>
