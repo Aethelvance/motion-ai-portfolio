@@ -1,5 +1,5 @@
 // Background molecule: grid overlay and floating particles behind the hero content.
-import HeroParticle from '@/components/atoms/HeroParticle/HeroParticle';
+import HeroParticle from '@/components/atoms/HeroParticle';
 import styles from './HeroBackground.module.css';
 
 export interface HeroBackgroundProps {

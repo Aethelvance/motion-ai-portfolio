@@ -6,12 +6,12 @@
 import { useEffect, useRef, useState, type ChangeEvent, type ClipboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Plus, MessageSquare, Trash2, PanelLeftClose, PanelLeftOpen, Sparkles, Check, CheckCheck, Paperclip, X } from 'lucide-react';
-import { useYuyiStore, yuyiStore, getMessageText, getMessageImage, type ChatSession } from '@/components/providers/yuyiStore';
-import { AssistantMessage } from '@/components/organisms/AIAssistant/AssistantMessage';
-import { useAnimateLastMessage } from '@/components/organisms/AIAssistant/useAnimateLastMessage';
+import { useYuyiStore, yuyiStore, getMessageText, getMessageImage, type ChatSession } from '@/stores/yuyi';
+import { AssistantMessage } from '@/components/organisms/ChatBubble/message';
+import { useAnimateLastMessage } from '@/components/organisms/ChatBubble/use-animate-last';
 import { useChatMessagesScroll } from '@/hooks/useChatMessagesScroll';
 import { MENU_ITEMS } from '@/constants/menu';
-import styles from './YuyiPage.module.css';
+import styles from './full-chat.module.css';
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const MOBILE_BREAKPOINT_PX = 768;
@@ -121,7 +121,7 @@ export default function YuyiPage() {
             {sidebarOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
           </button>
           <img
-            src="/avatar-bot.png"
+            src="/assets/avatar-bot.png"
             alt="Yuyi AI"
             className="h-10 w-10 shrink-0 rounded-full border border-primary/40 object-cover"
           />

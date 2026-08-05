@@ -1,16 +1,16 @@
-// Floating AI assistant: a bubble in the bottom-left corner that opens a small chat window. State and conversation are shared with the dedicated /yuyi page via the global yuyiStore. The floating UI is suppressed on /yuyi (the page IS the chat, so the bubble would be redundant); it only renders on the other pages.
+// Floating chat bubble: a small chat window in the bottom-left corner. State and conversation are shared with the dedicated /yuyi page via the global yuyiStore. The floating UI is suppressed on /yuyi (the page IS the chat, so the bubble would be redundant); it only renders on the other pages.
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Plus, Check, CheckCheck } from 'lucide-react';
-import { useYuyiStore, yuyiStore, getMessageText, getMessageImage } from '@/components/providers/yuyiStore';
-import { AssistantMessage } from './AssistantMessage';
-import { useAnimateLastMessage } from './useAnimateLastMessage';
+import { useYuyiStore, yuyiStore, getMessageText, getMessageImage } from '@/stores/yuyi';
+import { AssistantMessage } from './message';
+import { useAnimateLastMessage } from './use-animate-last';
 import { useChatMessagesScroll } from '@/hooks/useChatMessagesScroll';
-import styles from './AIAssistant.module.css';
+import styles from './bubble.module.css';
 
 const YuyiIcon = () => (
   <img
-    src="/avatar-bot.png"
+    src="/assets/avatar-bot.png"
     alt="Yuyi AI"
     className="h-6 w-6 rounded-full border border-primary/40 object-cover"
   />

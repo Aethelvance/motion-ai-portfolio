@@ -1,7 +1,7 @@
 // Vertical scroll-spy molecule: auto-discovers sections with [data-side-nav] and tracks the one currently in view via IntersectionObserver. Hidden while the hero is on screen.
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import SideNavItem from '@/components/atoms/SideNavItem/SideNavItem';
+import SideNavItem from '@/components/atoms/SideNavItem';
 import styles from './SideNav.module.css';
 
 interface DiscoveredSection {

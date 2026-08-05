@@ -4,9 +4,9 @@ import '@/styles/scrollbar.css';
 import TwindInit from '@/components/providers/TwindInit.astro';
 import SmoothScroll from '@/components/providers/SmoothScroll.astro';
 import HamburgerMenu from '@/components/organisms/HamburgerMenu/HamburgerMenu';
-import SideNav from '@/components/molecules/SideNav/SideNav';
+import SideNav from '@/components/molecules/SideNav';
 import Footer from '@/components/organisms/Footer/Footer';
-import AIAssistant from '@/components/organisms/AIAssistant/AIAssistant';
+import AIAssistant from '@/components/organisms/ChatBubble';
 
 export interface Props {
   title?: string;
@@ -20,8 +20,8 @@ const { title = 'Ingeniero de IA', currentPath, showFooter = true } = Astro.prop
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="icon" href="/assets/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>

@@ -1,10 +1,10 @@
 // Hero organism: composes background, content stack, and corner brackets. Orchestrates the entry sequence.
 import { motion } from 'framer-motion';
-import HeroBackground from '@/components/molecules/HeroBackground/HeroBackground';
-import HeroCTA from '@/components/molecules/HeroCTA/HeroCTA';
-import HeroTagline from '@/components/molecules/HeroTagline/HeroTagline';
-import HeroTitle from '@/components/molecules/HeroTitle/HeroTitle';
-import HeroCorner from '@/components/atoms/HeroCorner/HeroCorner';
+import HeroBackground from '@/components/molecules/HeroBackground';
+import HeroCTA from '@/components/molecules/HeroCTA';
+import HeroTagline from '@/components/molecules/HeroTagline';
+import HeroTitle from '@/components/molecules/HeroTitle';
+import HeroCorner from '@/components/atoms/HeroCorner';
 import styles from './Hero.module.css';
 
 const CORNER_POSITIONS = ['tl', 'tr', 'bl', 'br'] as const;

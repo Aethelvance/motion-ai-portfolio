@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import styles from './TailwindSection.module.css';
+import styles from './Tailwind.module.css';
 
 export function TailwindSection() {
   const section = useRef<HTMLElement>(null);

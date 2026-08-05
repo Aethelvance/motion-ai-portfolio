@@ -1,6 +1,6 @@
 // Title molecule that orchestrates the staggered letter reveal and exposes transform variants to each letter atom.
 import { motion, type Variants } from 'framer-motion';
-import HeroLetter, { type HeroLetterVariant } from '@/components/atoms/HeroLetter/HeroLetter';
+import HeroLetter, { type HeroLetterVariant } from '@/components/atoms/HeroLetter';
 import { HERO_COLORS, HERO_LETTERS } from '@/constants/hero';
 import styles from './HeroTitle.module.css';
 

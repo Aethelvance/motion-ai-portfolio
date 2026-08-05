@@ -1,3 +1,9 @@
 allowBuilds:
-  esbuild: true
-  sharp: true
+  esbuild: set this to true or false
+# pnpm settings (pnpm 11+)
+# https://pnpm.io/settings
+
+# Allow build scripts for these native modules
+onlyBuiltDependencies:
+  - esbuild
+  - sharp

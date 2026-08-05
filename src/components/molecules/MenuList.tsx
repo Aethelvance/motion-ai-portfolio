@@ -1,4 +1,4 @@
-import MenuLink from '@/components/atoms/MenuLink/MenuLink';
+import MenuLink from '@/components/atoms/MenuLink';
 import styles from './MenuList.module.css';
 
 export interface MenuItem {

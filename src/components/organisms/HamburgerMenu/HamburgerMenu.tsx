@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import MenuTrigger from '@/components/atoms/MenuTrigger/MenuTrigger';
-import CloseTrigger from '@/components/atoms/CloseTrigger/CloseTrigger';
-import MenuBackground from '@/components/atoms/MenuBackground/MenuBackground';
-import MenuList from '@/components/molecules/MenuList/MenuList';
+import MenuTrigger from '@/components/atoms/MenuTrigger';
+import CloseTrigger from '@/components/atoms/CloseTrigger';
+import MenuBackground from '@/components/atoms/MenuBackground';
+import MenuList from '@/components/molecules/MenuList';
 import { MENU_ITEMS } from '@/constants/menu';
 import useMenuAnimation from '@/hooks/useMenuAnimation';
 import styles from './HamburgerMenu.module.css';

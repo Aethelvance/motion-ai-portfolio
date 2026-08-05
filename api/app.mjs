@@ -1,4 +1,4 @@
-// Yuyi API: serves the AI assistant on the CV site. Loads the 3 context files (personality, mission, about-me), combines them into a system prompt, and proxies user messages to the LLM API. The API key lives only in .env (gitignored) so the browser never sees it.
+// Yuyi API: serves the AI assistant on the CV site. Loads 5 prompt sections from api/prompts/ in numeric order, combines them into a system prompt, and proxies user messages to the LLM API. The API key lives only in .env (gitignored) so the browser never sees it.
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -12,13 +12,14 @@ const BASE_URL = process.env.LLM_BASE_URL || 'https://openrouter.ai/api/v1';
 const MODEL = process.env.LLM_MODEL || 'google/gemma-4-26b-a4b-it';
 const SITE_URL = process.env.SITE_URL || 'http://localhost:4321';
 
-const personality = readFileSync(join(__dirname, 'personality.txt'), 'utf-8');
-const mission = readFileSync(join(__dirname, 'mission.txt'), 'utf-8');
-const aboutMe = readFileSync(join(__dirname, 'about-me.txt'), 'utf-8');
-const examples = readFileSync(join(__dirname, 'examples.txt'), 'utf-8');
-const pageContext = readFileSync(join(__dirname, 'page-context.md'), 'utf-8');
+const promptsDir = join(__dirname, 'prompts');
+const persona = readFileSync(join(promptsDir, '01-persona.md'), 'utf-8');
+const mission = readFileSync(join(promptsDir, '02-mission.md'), 'utf-8');
+const examples = readFileSync(join(promptsDir, '03-examples.md'), 'utf-8');
+const knowledge = readFileSync(join(promptsDir, '04-knowledge.md'), 'utf-8');
+const context = readFileSync(join(promptsDir, '05-context.md'), 'utf-8');
 // Resolve relative markdown link paths (/foo.png) against SITE_URL so the AI can use short paths in context files without hardcoding the domain.
-const systemPrompt = `${personality}\n\n---\n\n${mission}\n\n---\n\n${examples}\n\n---\n\n${aboutMe}\n\n---\n\n${pageContext}`.replace(
+const systemPrompt = `${persona}\n\n---\n\n${mission}\n\n---\n\n${examples}\n\n---\n\n${knowledge}\n\n---\n\n${context}`.replace(
   /\]\((\/[^)]+)\)/g,
   `](${SITE_URL}$1)`,
 );

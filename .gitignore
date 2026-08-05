@@ -5,6 +5,8 @@ dist/
 
 # dependencies
 node_modules/
+# pnpm local content-addressable store (created by pnpm 11.20+ as fallback, root-owned, pollutes repo)
+.pnpm-store/
 
 # logs
 npm-debug.log*

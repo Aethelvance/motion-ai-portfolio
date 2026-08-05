@@ -69,3 +69,13 @@ Consult these guides before working on related tasks:
 - **Allowed browser:** Only the system-installed Google Chrome (`/usr/bin/google-chrome-stable`).
 - **Forbidden browsers:** Brave, Firefox, WebKit, or any other user-owned browser profile must not be touched.
 - **Usage:** Playwright may be used to open `localhost`, interact with the UI, and capture screenshots for visual validation. It must run in headless mode and use the system Chrome executable path.
+
+## Project Structure (post-restructure)
+
+- **Backend (api/)**: Node http server. Entry point: `api/app.mjs`. System prompt built from `api/prompts/0N-*.md` files concatenated in numeric order, separated by `---`.
+- **Frontend (src/)**: Astro with React islands. Atomic design — `atoms/` and `molecules/` are flat file pairs (no folders); `organisms/` and `sections/` only use folders for multi-file components.
+- **Yuyi store**: `src/stores/yuyi.ts` (NOT under `components/providers/` — that folder is for Astro providers only).
+- **Static assets (public/)**: grouped into `assets/` (favicon, avatar), `certs/` (CV and certificates), `projects/` (project screenshots and `catalog.md`). All public filenames are kebab-case.
+- **Path aliases**: `@/*` maps to `src/*` (see `tsconfig.json`). No `@/api/*` alias — api is loaded directly via `node`/`docker`.
+- **System prompt editing**: when changing Yuyi's behavior, edit files in `api/prompts/`. The api server reads them at startup; restart with `pkill -f app.mjs; pnpm server` to pick up changes.
+- **Historical restructuring plan**: see `plan.md` (root).

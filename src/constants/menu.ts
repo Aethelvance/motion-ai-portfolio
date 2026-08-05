@@ -1,4 +1,4 @@
-import type { MenuItem } from '@/components/molecules/MenuList/MenuList';
+import type { MenuItem } from '@/components/molecules/MenuList';
 
 // Main navigation entries requested by the product owner.
 export const MENU_ITEMS: MenuItem[] = [

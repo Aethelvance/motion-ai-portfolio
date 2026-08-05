@@ -1,6 +1,6 @@
 // Contact section: scroll-triggered fade-in on the title, email and social row, plus a subtle mouse-tracking gradient halo behind the CTA. Mirrors the provided design and uses the project palette tokens.
 import { useEffect, useRef } from 'react';
-import styles from './ContactSection.module.css';
+import styles from './Contact.module.css';
 
 const EMAIL = 'aethelvance@ingenierodeia.com';
 

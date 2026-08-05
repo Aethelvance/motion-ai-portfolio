@@ -4,7 +4,7 @@
 // briefly render with active=false (releasedCount = chunks.length → all chunks flash
 // visible) before resetting to 0 and starting the reveal.
 import { useMemo } from 'react';
-import type { ChatMessage } from '@/components/providers/yuyiStore';
+import type { ChatMessage } from '@/stores/yuyi';
 
 export function useAnimateLastMessage(
   messages: ChatMessage[],
