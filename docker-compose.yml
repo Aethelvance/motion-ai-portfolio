@@ -1,6 +1,14 @@
 # docker-compose.yml for Dokploy (and any docker compose compatible host).
 # Two services: web (nginx + Astro static) and api (Node.js Yuyi backend).
 # The web container proxies /api/* to the api container. The browser only talks to the web origin.
+#
+# Dokploy notes:
+# - Traefik handles SSL termination and ports 80/443. The web container binds only 80
+#   internally; Traefik forwards traffic to it. Do NOT expose 443 on the container.
+# - Healthchecks let Traefik know when the service is ready and lets the `depends_on`
+#   condition below hold the web service until the api is responding.
+# - The api has NO public port (only `expose` on the internal network). The browser
+#   only ever talks to the web origin; nginx proxies /api/* to the api container.
 
 services:
   web:
@@ -12,11 +20,19 @@ services:
         # api's system prompt resolve correctly. The api uses SITE_URL for this.
         PUBLIC_API_URL: /api
     restart: unless-stopped
+    # Dokploy/Traefik handles SSL. Container only binds 80 (internal).
     ports:
       - "80:80"
-      - "443:443"
+    # Liveness probe: nginx serves the static index.html (Astro redirects / to /cv).
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/index.html"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     networks:
       - cv-net
 
@@ -37,7 +53,22 @@ services:
       # (e.g. /certs/aws.png -> https://yoursite.com/certs/aws.png). Set to the
       # public URL of the web service in production.
       SITE_URL: ${SITE_URL:-http://localhost}
+      # CORS allowlist. Comma-separated. Use "*" for dev only; in production set
+      # to the public origin (e.g. "https://yoursite.com"). The api is internal-only
+      # in production (no public port), so the browser's same-origin policy already
+      # gates this; the header is defense in depth.
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      # Max request body size (bytes). Default 1 MiB; large enough for chat with
+      # images, small enough to prevent trivial DoS.
+      MAX_BODY_BYTES: ${MAX_BODY_BYTES:-1048576}
       PORT: 3001
+    # Healthcheck: api exposes GET /health
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     networks:
       - cv-net
 

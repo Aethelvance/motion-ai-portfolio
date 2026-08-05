@@ -5,14 +5,19 @@ WORKDIR /app
 ENV CI=true
 RUN corepack enable
 
-# Install only production deps. The post-install rebuild is needed because pnpm 11+
-# errors on ignored build scripts by default (esbuild needs its native binary unpacked).
+# Install only production deps. pnpm 11+ has a strict mode that errors on
+# build scripts by default; we skip them with --ignore-scripts and then rebuild
+# esbuild/sharp explicitly so their native binaries are unpacked.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm install --frozen-lockfile --prod \
-    && pnpm rebuild esbuild
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts \
+    && pnpm rebuild esbuild sharp
 
-# Copy the api code
-COPY api/ ./api/
+# Copy the api code. Use --chown to ensure files are owned by the non-root user.
+COPY --chown=node:node api/ ./api/
+
+# Drop privileges: run as the built-in "node" user (UID 1000) instead of root.
+# Defense in depth: even if an attacker gets code execution, they don't have root.
+USER node
 
 # Env vars come from docker-compose.yml (LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, SITE_URL, PORT)
 # The PORT default in app.mjs is 3001
