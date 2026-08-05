@@ -169,8 +169,8 @@ export default function Footer() {
             <p className="max-w-xs text-sm leading-relaxed text-text-secondary">
               AI Engineer & Software Developer especializado en integrar LLMs, automatizar infra y construir sistemas que escalan sin supervisión.
             </p>
-            <button onClick={copyEmail} className="group mt-6 flex items-center gap-3 text-left">
-              <span className="relative overflow-hidden font-mono text-lg font-semibold md:text-xl">
+            <button onClick={copyEmail} className={`group mt-6 flex flex-wrap items-center text-left sm:flex-nowrap ${styles.emailRow}`}>
+              <span className={`relative overflow-hidden font-mono text-lg font-semibold md:text-xl ${styles.emailText}`}>
                 {EMAIL}
                 <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-cyan transition-transform duration-500 group-hover:scale-x-100" />
               </span>

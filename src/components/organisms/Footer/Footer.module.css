@@ -1,8 +1,22 @@
-.footer {
-  box-shadow: 0 -40px 90px rgba(10, 10, 11, 0.22);
-}
+/* Mobile-only overrides for Footer interactive elements. Desktop uses the original Tailwind classes from the component JSX. */
 
-.noise {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+/* Note: `!important` is required because Twind injects utility classes at runtime after the CSS module, so without it the mobile overrides lose the cascade battle. Desktop is unaffected because the media query excludes it. */
+
+@media (max-width: 639px) {
+  /* Email row: allow the pill to wrap below the address on narrow viewports. */
+  .emailRow {
+    flex-wrap: wrap !important;
+    column-gap: 0.75rem !important;
+    row-gap: 0.5rem !important;
+  }
+
+  /* Email text: smaller font on mobile and truncation with ellipsis if it still overflows. */
+  .emailText {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 0.875rem !important;
+  }
 }

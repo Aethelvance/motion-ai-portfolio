@@ -68,7 +68,7 @@ export function ContactSection() {
 
       <div className="relative z-10 mx-auto max-w-4xl px-8 py-24">
         <div ref={titleRef} className={`${styles.contactElement} mb-16 text-center`}>
-          <h1 className="mb-4 font-mono text-[clamp(2.2rem,4.5vw,3.4rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-text-primary">
+          <h1 className={`mb-4 font-mono font-semibold leading-[0.95] tracking-[-0.04em] text-text-primary ${styles.headlineMobile}`}>
             <span className={`inline-block ${styles.hoverTrigger}`}>Creemos</span>{' '}
             <span className={`inline-block ${styles.hoverTrigger}`}>algo</span>{' '}
             <span className={`group inline-block ${styles.hoverTrigger} relative`}>
@@ -84,14 +84,14 @@ export function ContactSection() {
         <div ref={emailRef} className={`${styles.contactElement} mb-16 flex justify-center`}>
           <a
             href={`mailto:${EMAIL}`}
-            className="group relative inline-flex items-center gap-4 overflow-hidden rounded-full border border-border px-8 py-4 backdrop-blur-sm transition-all duration-500 hover:border-text-secondary"
+            className={`group relative inline-flex items-center gap-4 overflow-hidden rounded-full border border-border px-8 py-4 backdrop-blur-sm transition-all duration-500 hover:border-text-secondary ${styles.emailPill}`}
             style={{ background: 'rgba(31,31,42,0.5)' }}
           >
             <span
               className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-text-secondary/20 to-transparent opacity-0 transition-all duration-500 group-hover:translate-x-full group-hover:opacity-100"
             />
 
-            <span className="relative text-lg text-text-secondary transition-colors duration-300 group-hover:text-text-primary">
+            <span className={`relative text-lg text-text-secondary transition-colors duration-300 group-hover:text-text-primary ${styles.emailText}`}>
               {EMAIL}
             </span>
 

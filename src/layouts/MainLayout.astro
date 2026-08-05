@@ -40,7 +40,7 @@ const { title = 'Ingeniero de IA', currentPath, showFooter = true } = Astro.prop
     </script>
   </head>
   <body class="min-h-screen bg-base text-text-primary font-sans antialiased">
-    <HamburgerMenu currentPath={currentPath} client:load />
+    {currentPath !== '/yuyi' && <HamburgerMenu currentPath={currentPath} client:load />}
     <SideNav client:load />
     <slot />
     {showFooter && <Footer client:load />}

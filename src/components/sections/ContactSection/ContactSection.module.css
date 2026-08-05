@@ -24,6 +24,33 @@
   color: var(--text-secondary);
 }
 
+/* Headline sizing: desktop uses the original clamp, mobile (<640px) lowers the min so the three words fit narrow viewports without overflow. */
+.headlineMobile {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+}
+
+@media (max-width: 639px) {
+  .headlineMobile {
+    font-size: clamp(1.5rem, 7vw, 2.2rem) !important;
+  }
+}
+
+/* Email pill: desktop uses the original gap-4/px-8/py-4/text-lg from the JSX.
+   Mobile (<640px) overrides to a smaller padding/font/gap so the full address fits narrow viewports. */
+@media (max-width: 639px) {
+  .emailPill {
+    font-size: 0.95rem !important;
+    padding: 0.75rem 1.25rem !important;
+    gap: 0.5rem !important;
+    max-width: 100% !important;
+  }
+  .emailText {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+}
+
 /* Slow ambient orbs behind the section. */
 @keyframes pulseSlow {
   0%,

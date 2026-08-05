@@ -19,6 +19,7 @@ const YuyiIcon = () => (
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [showFloating, setShowFloating] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { messages, isLoading, input, currentChatId } = useYuyiStore();
   const shouldAnimate = useAnimateLastMessage(messages, currentChatId);
   const messagesRef = useChatMessagesScroll<HTMLDivElement>(currentChatId);
@@ -31,6 +32,11 @@ export default function AIAssistant() {
 
   useEffect(() => {
     setShowFloating(!window.location.pathname.startsWith('/yuyi'));
+    const mq = window.matchMedia('(max-width: 767px)');
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    setIsMobile(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   return (
@@ -42,7 +48,7 @@ export default function AIAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={`fixed bottom-40 left-40 z-40 flex h-[500px] w-[380px] flex-col overflow-hidden rounded-2xl border border-border bg-surface ${styles.window}`}
+            className={`fixed inset-x-4 bottom-20 z-40 flex h-[min(500px,80dvh)] w-auto max-w-[380px] flex-col overflow-hidden rounded-2xl border border-border bg-surface sm:left-40 sm:right-auto sm:bottom-40 sm:h-[500px] sm:w-[380px] sm:max-w-none ${styles.window}`}
           >
             <div className="flex items-center justify-between border-b border-border bg-surface-elevated px-4 py-3">
               <div className="flex items-center gap-2">
@@ -152,15 +158,15 @@ export default function AIAssistant() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showFloating && (
+        {showFloating && (!isOpen || !isMobile) && (
           <motion.button
             onClick={() => setIsOpen((v) => !v)}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={`fixed bottom-20 left-40 z-40 flex items-center gap-2 rounded-full border border-border bg-surface-elevated px-4 py-3 text-text-primary transition-all hover:scale-105 hover:border-primary ${styles.bubble}`}
-            aria-label={isOpen ? 'Cerrar Yuyi AI' : 'Abrir Yuyi AI'}
+            className={`fixed bottom-4 left-4 z-40 flex items-center gap-2 rounded-full border border-border bg-surface-elevated px-4 py-3 text-text-primary transition-all hover:scale-105 hover:border-primary sm:bottom-20 sm:left-40 ${styles.bubble}`}
+            aria-label="Abrir Yuyi AI"
           >
             <YuyiIcon />
             <span className="font-mono text-sm font-medium">Yuyi AI</span>

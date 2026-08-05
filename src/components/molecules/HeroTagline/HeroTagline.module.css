@@ -11,6 +11,13 @@
   align-items: center;
 }
 
+/* Mobile-only: allow the long label to wrap to a new line below the flanking lines when it would overflow the narrow viewport. Desktop keeps the single-row layout untouched. */
+@media (max-width: 639px) {
+  .tagline .sub {
+    flex-wrap: wrap;
+  }
+}
+
 .tagline .sub .line {
   height: 1px;
   width: 3rem;

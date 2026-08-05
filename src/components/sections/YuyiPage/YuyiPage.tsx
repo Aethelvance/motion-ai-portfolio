@@ -3,15 +3,18 @@
 // bottom-pinned input. Shares state with the floating AIAssistant bubble via yuyiStore
 // (the bubble is suppressed on this page; it only appears on /cv and /contact).
 // Suggested prompt cards appear on a fresh chat to bootstrap the conversation.
-import { useRef, useState, type ChangeEvent, type ClipboardEvent } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState, type ChangeEvent, type ClipboardEvent } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Plus, MessageSquare, Trash2, PanelLeftClose, PanelLeftOpen, Sparkles, Check, CheckCheck, Paperclip, X } from 'lucide-react';
 import { useYuyiStore, yuyiStore, getMessageText, getMessageImage, type ChatSession } from '@/components/providers/yuyiStore';
 import { AssistantMessage } from '@/components/organisms/AIAssistant/AssistantMessage';
 import { useAnimateLastMessage } from '@/components/organisms/AIAssistant/useAnimateLastMessage';
 import { useChatMessagesScroll } from '@/hooks/useChatMessagesScroll';
+import { MENU_ITEMS } from '@/constants/menu';
+import styles from './YuyiPage.module.css';
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const MOBILE_BREAKPOINT_PX = 768;
 
 const SUGGESTED_PROMPTS = [
   '¿Qué tecnologías maneja Luis?',
@@ -22,6 +25,7 @@ const SUGGESTED_PROMPTS = [
 export default function YuyiPage() {
   const { messages, isLoading, input, chats, currentChatId } = useYuyiStore();
   const messagesRef = useChatMessagesScroll<HTMLDivElement>(currentChatId);
+  const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [pendingImage, setPendingImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,6 +38,18 @@ export default function YuyiPage() {
     }
     return -1;
   })();
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT_PX - 1}px)`);
+    const onChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+      setSidebarOpen(!e.matches);
+    };
+    setIsMobile(mq.matches);
+    setSidebarOpen(!mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   const readFile = (file: File) => {
     if (file.size > MAX_IMAGE_BYTES) return;
@@ -71,17 +87,34 @@ export default function YuyiPage() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-base text-text-primary">
+      <AnimatePresence>
+        {isMobile && sidebarOpen && (
+          <motion.button
+            type="button"
+            aria-label="Cerrar sidebar"
+            onClick={() => setSidebarOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-30 bg-base/70 backdrop-blur-sm"
+          />
+        )}
+      </AnimatePresence>
+
       <ChatSidebar
         chats={chats}
         currentChatId={currentChatId}
         isOpen={sidebarOpen}
+        isMobile={isMobile}
+        onClose={() => setSidebarOpen(false)}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex shrink-0 items-center gap-3 border-b border-border bg-surface/40 px-4 py-6 backdrop-blur-sm">
+        <header className={`flex shrink-0 items-center gap-3 border-b border-border bg-surface/40 px-4 py-6 backdrop-blur-sm ${styles.headerPad}`}>
           <button
             onClick={() => setSidebarOpen((v) => !v)}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-border hover:text-text-primary"
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-border hover:text-text-primary ${styles.headerToggle}`}
             aria-label={sidebarOpen ? 'Cerrar sidebar' : 'Abrir sidebar'}
             title={sidebarOpen ? 'Cerrar sidebar' : 'Abrir sidebar'}
           >
@@ -193,7 +226,7 @@ export default function YuyiPage() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-border hover:text-text-primary disabled:opacity-30"
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-border hover:text-text-primary disabled:opacity-30 ${styles.inputBtn}`}
                 aria-label="Adjuntar imagen"
                 title="Adjuntar imagen"
               >
@@ -218,7 +251,7 @@ export default function YuyiPage() {
               <button
                 onClick={handleSend}
                 disabled={isLoading || (!input.trim() && !pendingImage)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-base transition-colors hover:bg-primary/80 disabled:opacity-30"
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-base transition-colors hover:bg-primary/80 disabled:opacity-30 ${styles.inputBtn}`}
                 aria-label="Enviar"
               >
                 <Send className="h-4 w-4" />
@@ -238,26 +271,58 @@ function ChatSidebar({
   chats,
   currentChatId,
   isOpen,
+  isMobile,
+  onClose,
 }: {
   chats: ChatSession[];
   currentChatId: string | null;
   isOpen: boolean;
+  isMobile: boolean;
+  onClose: () => void;
 }) {
-  return (
-    <aside
-      className={`flex shrink-0 flex-col overflow-hidden border-r border-border bg-surface transition-[width,opacity] duration-300 ease-out ${
+  // On mobile the sidebar is a fixed drawer sliding in from the left with z above the chat.
+  // On desktop (md+) the original inline flex behavior is preserved.
+  const baseClasses = isMobile
+    ? `fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] border-r border-border bg-surface transition-transform duration-300 ease-out ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`
+    : `flex shrink-0 flex-col overflow-hidden border-r border-border bg-surface transition-[width,opacity] duration-300 ease-out ${
         isOpen ? 'w-56 opacity-100' : 'w-0 opacity-0'
-      }`}
-      aria-hidden={!isOpen}
-    >
-      <div className="flex h-full w-56 flex-col gap-2 p-3">
-        <button
-          onClick={() => yuyiStore.newChat()}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-surface-elevated px-3 py-2.5 font-mono text-sm text-text-primary transition-colors hover:border-primary hover:text-primary"
-        >
-          <Plus className="h-4 w-4" />
-          New chat
-        </button>
+      }`;
+  const innerClasses = isMobile
+    ? 'flex h-full w-72 max-w-[85vw] flex-col gap-2 p-3'
+    : 'flex h-full w-56 flex-col gap-2 p-3';
+  const hidden = isMobile ? false : !isOpen;
+  const handleSelect = (id: string) => {
+    yuyiStore.selectChat(id);
+    if (isMobile) onClose();
+  };
+  const handleNewChat = () => {
+    yuyiStore.newChat();
+    if (isMobile) onClose();
+  };
+
+  return (
+    <aside className={baseClasses} aria-hidden={hidden}>
+      <div className={innerClasses}>
+        <div className="flex items-center justify-between gap-2">
+          <button
+            onClick={handleNewChat}
+            className={`flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-surface-elevated px-3 py-2.5 font-mono text-sm text-text-primary transition-colors hover:border-primary hover:text-primary ${styles.newChatBtn}`}
+          >
+            <Plus className="h-4 w-4" />
+            New chat
+          </button>
+          {isMobile && (
+            <button
+              onClick={onClose}
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:bg-border hover:text-text-primary ${styles.drawerCloseBtn}`}
+              aria-label="Cerrar sidebar"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
 
         <div className="flex-1 overflow-y-auto">
           <p className="px-2 pb-2 pt-1 font-mono text-[10px] uppercase tracking-widest text-text-secondary/60">
@@ -267,8 +332,8 @@ function ChatSidebar({
             {chats.map((chat) => (
               <li key={chat.id} className="group relative">
                 <button
-                  onClick={() => yuyiStore.selectChat(chat.id)}
-                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 pr-8 text-left font-mono text-xs transition-colors ${
+                  onClick={() => handleSelect(chat.id)}
+                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 pr-8 text-left font-mono text-xs transition-colors ${styles.chatItem} ${
                     chat.id === currentChatId
                       ? 'border border-primary/40 bg-primary/10 text-text-primary'
                       : 'text-text-secondary hover:bg-surface-elevated hover:text-text-primary'
@@ -283,7 +348,7 @@ function ChatSidebar({
                       e.stopPropagation();
                       yuyiStore.deleteChat(chat.id);
                     }}
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1 text-text-secondary opacity-0 transition-all hover:bg-border hover:text-error group-hover:opacity-100"
+                    className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1 text-text-secondary transition-all hover:bg-border hover:text-error ${styles.deleteBtn}`}
                     aria-label="Eliminar conversación"
                     title="Eliminar"
                   >
@@ -294,6 +359,33 @@ function ChatSidebar({
             ))}
           </ul>
         </div>
+
+        <nav aria-label="Site navigation" className={`shrink-0 border-t border-border pt-2 ${styles.sidebarMenu}`}>
+          <p className="px-2 pb-2 pt-1 font-mono text-[10px] uppercase tracking-widest text-text-secondary/60">
+            Menu
+          </p>
+          <ul className="flex flex-col gap-1">
+            {MENU_ITEMS.map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  aria-current={item.href === '/yuyi' ? 'page' : undefined}
+                  className={`flex items-center gap-2 rounded-lg px-3 py-2 font-mono text-xs transition-colors ${styles.menuLink} ${
+                    item.href === '/yuyi'
+                      ? 'text-text-secondary/50 cursor-default'
+                      : 'text-text-secondary hover:bg-surface-elevated hover:text-text-primary'
+                  }`}
+                  onClick={(e) => {
+                    if (item.href === '/yuyi') e.preventDefault();
+                  }}
+                >
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-60" />
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </aside>
   );

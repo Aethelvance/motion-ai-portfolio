@@ -1,0 +1,51 @@
+/* Mobile-only overrides for YuyiPage interactive elements. Desktop uses the original Tailwind classes from the component JSX. */
+
+/* Note: `!important` is required because Twind injects utility classes at runtime after the CSS module, so without it the mobile overrides lose the cascade battle. Desktop is unaffected because the media query excludes it. */
+
+@media (max-width: 767px) {
+  /* Header toggle button: bump to 44px touch target on mobile. Desktop keeps h-9 w-9 (36px) from the JSX. */
+  .headerToggle {
+    height: 2.75rem !important;
+    width: 2.75rem !important;
+  }
+
+  /* Input row buttons (paperclip, send): bump to 44px touch target on mobile. */
+  .inputBtn {
+    height: 2.75rem !important;
+    width: 2.75rem !important;
+  }
+
+  /* "New chat" button: enforce 44px touch target on mobile. Desktop relies on py-2.5 from the JSX. */
+  .newChatBtn {
+    height: 2.75rem !important;
+  }
+
+  /* Chat history items: enforce 44px touch target on mobile. Desktop uses py-2 from the JSX. */
+  .chatItem {
+    height: 2.75rem !important;
+  }
+
+  /* Delete (trash) button: larger touch target and always visible on mobile. Desktop uses p-1 + hover-only from the JSX. */
+  .deleteBtn {
+    height: 1.75rem !important;
+    width: 1.75rem !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+  }
+
+  /* Drawer close (X) button: only rendered on mobile, keeps h-11 from the JSX. */
+  .drawerCloseBtn {
+    /* no-op: this class only applies on mobile via the isMobile gate */
+  }
+
+  /* Header padding: tighter on mobile to give the chat more vertical room. */
+  .headerPad {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  /* Sidebar menu links: 44px touch target on mobile. Desktop uses the JSX padding. */
+  .menuLink {
+    min-height: 2.75rem !important;
+  }
+}
