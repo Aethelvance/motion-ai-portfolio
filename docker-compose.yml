@@ -20,9 +20,6 @@ services:
         # api's system prompt resolve correctly. The api uses SITE_URL for this.
         PUBLIC_API_URL: /api
     restart: unless-stopped
-    # Dokploy/Traefik handles SSL. Container only binds 80 (internal).
-    ports:
-      - "80:80"
     # Liveness probe: nginx serves the static index.html (Astro redirects / to /cv).
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/index.html"]
