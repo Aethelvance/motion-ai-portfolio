@@ -79,6 +79,20 @@ const PORT = Number(process.env.PORT) || 3001;
 const API_KEY = process.env.LLM_API_KEY;
 const BASE_URL = process.env.LLM_BASE_URL || 'https://openrouter.ai/api/v1';
 const MODEL = process.env.LLM_MODEL || 'google/gemma-4-26b-a4b-it';
+// OpenAI's gpt-5+ family has a stricter parameter contract than gpt-4 or
+// OpenRouter-hosted models: it requires `max_completion_tokens` (not
+// `max_tokens`) and locks temperature to the default value (1), so
+// `temperature` must be omitted. OpenRouter and gpt-4 (and earlier) still
+// accept `max_tokens` and arbitrary temperature. Branch by provider + model
+// so the gemma path stays untouched while OpenAI gpt-5+ gets the new shape.
+const chatParams = (maxTokens) => {
+  const isOpenAI = BASE_URL.includes('api.openai.com');
+  const isGpt5Plus = /^gpt-[5-9]/.test(MODEL);
+  if (isOpenAI && isGpt5Plus) {
+    return { max_completion_tokens: maxTokens };
+  }
+  return { max_tokens: maxTokens, temperature: 0.7 };
+};
 const SITE_URL = process.env.SITE_URL;
 // CORS allowlist. Comma-separated. Use "*" for dev only; in production set to the
 // actual public origin (e.g. "https://yoursite.com"). The api is internal-only in
@@ -471,7 +485,9 @@ async function probeUpstream(requestId) {
       body: JSON.stringify({
         model: MODEL,
         messages: [{ role: 'user', content: 'ping' }],
-        max_tokens: 1,
+        // gpt-5+ needs >=5 because of internal reasoning overhead; gemma/gpt-4
+        // only need 1, but the model returns as many as it wants regardless.
+        ...chatParams(8),
       }),
       signal: controller.signal,
       agent: upstreamAgent,
@@ -805,8 +821,7 @@ const server = createServer(async (req, res) => {
         body: JSON.stringify({
           model: MODEL,
           messages: [{ role: 'system', content: systemPrompt }, ...sanitized],
-          temperature: 0.7,
-          max_tokens: detectMaxTokens(sanitized),
+          ...chatParams(detectMaxTokens(sanitized)),
         }),
         signal: controller.signal,
         agent: upstreamAgent,
@@ -1004,8 +1019,7 @@ async function handleChatStream(req, res, requestId) {
       body: JSON.stringify({
         model: MODEL,
         messages: [{ role: 'system', content: systemPrompt }, ...sanitized],
-        temperature: 0.7,
-        max_tokens: detectMaxTokens(sanitized),
+        ...chatParams(detectMaxTokens(sanitized)),
         stream: true,
       }),
       signal: controller.signal,
