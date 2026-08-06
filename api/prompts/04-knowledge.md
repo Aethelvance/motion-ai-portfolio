@@ -2,15 +2,18 @@ SOBRE LUIS VERASTEGUI:
 
 Nombre completo: Luis Verastegui
 Rol principal: Software Developer & AI Integrator
-Ubicación: Ayacucho Peru
+Ubicación: loc. Todo · LATAM (remoto, disponible en cualquier punto de LATAM)
+Modalidad: Remoto (todo)
+Idiomas: Español nativo, Inglés intermedio
 Email: aethelvance@ingenierodeia.com
-Disponibilidad: Disponible Inmediata
+Disponibilidad: Inmediata
 
 HABILIDADES TÉCNICAS:
 
 Backend:
 - Golang (Go) — APIs REST, webhooks, alto rendimiento
 - Node.js, Python
+- PostgreSQL
 
 Frontend:
 - Astro (framework principal)
@@ -32,31 +35,46 @@ IA / LLMs:
 - Agentes IA conversacionales
 - RPA (Robotic Process Automation) con IA
 - Workflows automatizados
+- ComfyUI (Stable Diffusion, generación visual con IA)
 
 Scripting y Sistemas:
 - Bash scripting avanzado
 - Arch Linux (uso diario)
 - Automatización de sistemas Linux
 
-PROYECTOS DESTACADOS:
+EDUCACIÓN (en curso, todas al mismo tiempo):
+- Técnico en Ingeniería de Software con IA — Instituto Técnico SENATI · 2025 — presente · en curso
+- Ingeniería de IA — Coursera · 2025 — presente · en curso
+- Project Manager — Formación Independiente · 2025 — presente · en curso
 
-1. DevSecOps / Infraestructura Segura
-   - Servidor VPS blindado con reglas Nftables (DROP silencioso de escaneos/bots)
-   - Autenticación SSH Ed25519
-   - Backups cifrados automáticos a S3/Cloudflare R2 con Restic
-   - Stack: Ubuntu, Docker, Nftables, Cloudflare R2
+PROYECTOS DESTACADOS (los 3 del CV publico):
 
-2. Backend Developer (AI-Assisted)
-   - 2 APIs funcionales en Go: una para WhatsApp (OpenWA), otra para envío de correos
-   - 100% de automatización de notificaciones desde el frontend
-   - Interfaz construida con Astro, React y Tailwind CSS
-   - Stack: Golang, OpenWA, Astro, Webhooks
+1. Blackhole — Servidor PaaS self-hosted (Arquitectura Cloud · Self-Hosted Contabo)
+   - VPS en Contabo con Ubuntu Server, firewall Nftables con politica DROP que bloquea el 99.9% de escaneos y bots sin afectar a Docker
+   - Autenticacion SSH con claves criptograficas (sin password)
+   - Backups cifrados automaticos de los contenedores Docker hacia buckets S3 de Cloudflare R2 con Restic
+   - Stack: Ubuntu Server, Docker, Cloudflare R2, Nftables, Restic, SSH
 
-3. Integrador de IA
-   - Asistente conversacional en terminal para ejecutar comandos guiados (Yuyi, basado en LLM)
-   - Automatización visual (RPA) mediante IA con Tool Calling (JSON)
-   - Sistema de gestión de tareas y rutinas en Bash Scripting
-   - Stack: Arch Linux, Bash, LLM APIs, JSON Tool Calling
+2. Microservices — APIs REST en Go (APIs)
+   - 2 APIs funcionales para mensajeria
+   - Una derivada de OpenWA con rebranding 100% de la interfaz a la identidad de marca (blanqueamiento de imagen) sin alterar el nucleo del sistema
+   - La otra desde cero con GoLand y JSON webhooks
+   - Frontend de contacto que enruta peticiones HTTP al backend Go: frontend → servidor intermedio → API de Go
+   - Stack: Golang, OpenWA, JSON Webhooks, GoLand
+
+3. Bot Minecraft AI — Asistente IA de Minecraft (AI Integration · Developer Tooling)
+   - Asistente conversacional que vive dentro de Minecraft
+   - Conecta un modelo via API con un agente capaz de mover al personaje y obedecer instrucciones basicas
+   - Stack: Bash, LLM API, JSON Tool Calling, RPA
+   - Codigo publico: https://github.com/Aethelvance/minecraft-tool-calling-agent
+
+OTROS PROYECTOS INTERNOS Y HERRAMIENTAS DE TRABAJO (NO listados en el CV publico, son su dia a dia):
+- Yuyi: asistente conversacional en terminal (la IA que te esta hablando ahora mismo)
+- RPA visual: automatizacion visual con IA y Tool Calling (JSON)
+- Sistema de gestion de tareas y rutinas en Bash Scripting
+- Mail API: servicio de envio de correos en Go
+- Chat API (CYLUK Admin): panel de chat flows con IA
+- Stack general: Arch Linux, Bash, LLM APIs, JSON Tool Calling
 
 PROPUESTA DE VALOR ÚNICA:
 Luis combina:
