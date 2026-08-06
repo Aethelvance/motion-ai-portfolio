@@ -1,7 +1,7 @@
 // Floating chat bubble: a small chat window in the bottom-left corner. State and conversation are shared with the dedicated /yuyi page via the global yuyiStore. The floating UI is suppressed on /yuyi (the page IS the chat, so the bubble would be redundant); it only renders on the other pages.
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Plus, Check, CheckCheck } from 'lucide-react';
+import { X, Send, Plus, Check, CheckCheck, AlertCircle, RefreshCw } from 'lucide-react';
 import { useYuyiStore, yuyiStore, getMessageText, getMessageImage } from '@/stores/yuyi';
 import { AssistantMessage } from './message';
 import { useAnimateLastMessage } from './use-animate-last';
@@ -20,7 +20,7 @@ export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [showFloating, setShowFloating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const { messages, isLoading, input, currentChatId } = useYuyiStore();
+  const { messages, isLoading, input, currentChatId, lastError } = useYuyiStore();
   const shouldAnimate = useAnimateLastMessage(messages, currentChatId);
   const messagesRef = useChatMessagesScroll<HTMLDivElement>(currentChatId);
   const lastAssistantIdx = (() => {
@@ -128,6 +128,40 @@ export default function AIAssistant() {
             </div>
 
             <div className="border-t border-border bg-surface-elevated p-3">
+              <AnimatePresence>
+                {lastError && (
+                  <motion.div
+                    key={lastError.requestId ?? `${lastError.kind}_${lastError.status ?? ''}`}
+                    role="alert"
+                    aria-live="polite"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 4 }}
+                    transition={{ duration: 0.15 }}
+                    className="mb-2 flex items-start gap-2 rounded-lg border border-error/40 bg-error/10 px-2 py-1.5 text-[11px] text-text-primary"
+                  >
+                    <AlertCircle className="mt-0.5 h-3 w-3 shrink-0 text-error" aria-hidden="true" />
+                    <span className="min-w-0 flex-1 font-mono leading-snug">{lastError.message}</span>
+                    <button
+                      onClick={yuyiStore.retry}
+                      disabled={isLoading}
+                      className="flex shrink-0 items-center gap-1 rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text-primary transition-colors hover:border-primary hover:text-primary disabled:opacity-40"
+                      aria-label="Reintentar"
+                      title="Reintentar"
+                    >
+                      <RefreshCw className="h-2.5 w-2.5" />
+                    </button>
+                    <button
+                      onClick={yuyiStore.clearError}
+                      className="shrink-0 rounded p-0.5 text-text-secondary transition-colors hover:bg-border hover:text-text-primary"
+                      aria-label="Cerrar error"
+                      title="Cerrar"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <div className="flex items-center gap-2 rounded-full border border-border bg-base px-4 py-2">
                 <input
                   type="text"

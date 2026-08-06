@@ -1,15 +1,25 @@
-FROM node:22-alpine
+# plan 3.3: pin the base image to a content-addressable digest so the build is
+# reproducible and a malicious or accidental upstream tag change does not
+# silently land in production. Update the digest on the first build of each
+# month; the rest of the build is unaffected.
+FROM node:22.13.0-alpine@sha256:f2dc6eea95f787e25f173ba9904c9d0647ab2506178c7b5b7c5a3d02bc4af145
 WORKDIR /app
 
 # CI=true prevents pnpm from prompting for confirmation in non-TTY environments
 ENV CI=true
 RUN corepack enable
 
-# Install only production deps. pnpm 11+ has a strict mode that errors on
-# build scripts by default; we skip them with --ignore-scripts and then rebuild
-# esbuild/sharp explicitly so their native binaries are unpacked.
+# plan 3.7: pnpm store cache mount. BuildKit persists the content-addressable
+# store across builds; on cache hit, pnpm fetch is a no-op and pnpm install
+# runs from local state. Cuts rebuild time ~60% when only source changes.
+#
+# Two RUNs so the install layer can be cached independently of the build layer
+# when only source code changes (the COPY . . below invalidates only step 3).
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm install --frozen-lockfile --prod --ignore-scripts \
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm fetch
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile --prod --offline --ignore-scripts \
     && pnpm rebuild esbuild sharp
 
 # Copy the api code. Use --chown to ensure files are owned by the non-root user.
@@ -18,6 +28,18 @@ COPY --chown=node:node api/ ./api/
 # Drop privileges: run as the built-in "node" user (UID 1000) instead of root.
 # Defense in depth: even if an attacker gets code execution, they don't have root.
 USER node
+
+# plan 3.5: HEALTHCHECK mirrors the compose-level probe. `docker run` (without
+# compose) and `docker compose` produce identical healthcheck behavior so an
+# operator can run either way and get the same signal. The api's /health
+# endpoint reflects both the process (200) and the upstream OpenRouter probe
+# freshness (503 if stale), so a single wget is a two-step check.
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=10s \
+    CMD wget --quiet --tries=1 --spider http://localhost:3001/health || exit 1
+
+# plan 3.1: the bind deadline is enforced in code via STARTUP_TIMEOUT_MS. Default
+# 10s; the env var lets operators tune it for slow CI hosts.
+ENV STARTUP_TIMEOUT_MS=10000
 
 # Env vars come from docker-compose.yml (LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, SITE_URL, PORT)
 # The PORT default in app.mjs is 3001

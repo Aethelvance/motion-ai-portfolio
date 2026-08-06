@@ -2,6 +2,19 @@
 # Two services: web (nginx + Astro static) and api (Node.js Yuyi backend).
 # The web container proxies /api/* to the api container. The browser only talks to the web origin.
 #
+# Profiles (plan 3.2):
+#   dev  (default, no env vars set): `docker compose up` works out of the box.
+#         The dokploy-network is a local bridge that the web service is wired
+#         to but does not use.
+#   prod (DOKPLOY_EXTERNAL=true and DOKPLOY_NETWORK=<name>): the same compose
+#         file is reused; the network block flips to external and the web
+#         service's attachment is now to the Dokploy-managed network.
+#
+# The plan originally asked for a `prod` compose profile. Compose v5.3.1 (the
+# version in this image) does not support `profiles` on networks, so the
+# profile mechanism is replaced with an env-gated `external: ${DOKPLOY_EXTERNAL:-false}`.
+# Behavior is equivalent: dev compose does not require any external network.
+#
 # Dokploy notes:
 # - Traefik handles SSL termination and ports 80/443. The web container binds only 80
 #   internally; Traefik forwards traffic to it. Do NOT expose 443 on the container.
@@ -20,7 +33,10 @@ services:
         # api's system prompt resolve correctly. The api uses SITE_URL for this.
         PUBLIC_API_URL: /api
     container_name: cv-frontbackendbasic-jy2iiv-web
-    restart: unless-stopped
+    # plan 3.1: cap restart attempts to 5 within the default window so a bad
+    # deploy doesn't spin forever. Dokploy (or any orchestrator) must then
+    # surface the failure instead of masking it.
+    restart: on-failure:5
     ports:
       - "127.0.0.1:8080:${PORT_WEB}"
     expose:
@@ -43,6 +59,11 @@ services:
         condition: service_healthy
     networks:
       - cv-net
+      # plan 3.2: the web service always lists dokploy-network so the prod
+      # attachment is unconditional. In dev the network is a local bridge (see
+      # the networks block) that the service is wired to but does not use; in
+      # prod DOKPLOY_EXTERNAL=true flips it to an external lookup against the
+      # Dokploy-managed network. Either way the wiring is identical.
       - dokploy-network
 
   api:
@@ -50,11 +71,32 @@ services:
       context: .
       dockerfile: Dockerfile.api
     container_name: cv-frontbackendbasic-jy2iiv-api
-    restart: unless-stopped
+    # plan 3.1: see web service note. The api additionally enforces a 10s
+    # bind deadline in code (STARTUP_TIMEOUT_MS) so misconfig fails loud
+    # instead of being silently retried.
+    restart: on-failure:5
     # No public ports — the api is only reachable from the web container through the
     # internal docker network (see CV_NET below).
     expose:
       - "${PORT_API:-3000}"
+    # Persist server-side state across container restarts (plan 2.3):
+    #   /data/threads/<id>.json   — chat histories (ThreadStore)
+    #   /data/uploads/<uuid>.<ext> — uploaded images served via /api/chat/upload/:id
+    # Both directories are created by the api at startup with mkdirSync recursive.
+    volumes:
+      - yuyi-data:/data
+    # plan 3.6: secrets. Two options:
+    #   (a) env_file: .env.production  (default for this project) — file should be
+    #       chmod 600, owned by root:node, and added to .gitignore. Dokploy's
+    #       secret store writes here at deploy time.
+    #   (b) Docker secrets via `secrets:` block + `_FILE`-style env vars. More
+    #       secure (mounted as tmpfs, not in env dump) but requires the api to
+    #       read /run/secrets/<name> instead of process.env. Not wired yet;
+    #       switch by adding a secrets block + changing LLM_API_KEY to
+    #       LLM_API_KEY_FILE=/run/secrets/llm_api_key.
+    env_file:
+      - path: .env
+        required: true
     environment:
       LLM_API_KEY: ${LLM_API_KEY:?Set LLM_API_KEY in .env}
       LLM_BASE_URL: ${LLM_BASE_URL:-https://openrouter.ai/api/v1}
@@ -71,21 +113,45 @@ services:
       # Max request body size (bytes). Default 1 MiB; large enough for chat with
       # images, small enough to prevent trivial DoS.
       MAX_BODY_BYTES: ${MAX_BODY_BYTES:-1048576}
+      # Per-route body cap for /api/chat/upload. Plan 2.1.
+      MAX_BODY_BYTES_UPLOAD: ${MAX_BODY_BYTES_UPLOAD:-8388608}
+      # plan 2.3: server-side chat history. Set to "0" to fall back to the
+      # legacy "send full history" shape (the client still sends the new shape;
+      # the api will treat each turn as a single-message conversation).
+      USE_SERVER_THREADS: ${USE_SERVER_THREADS:-1}
       # The api code reads process.env.PORT. We pass PORT_API here so the same
       # env var that configures the web's proxy_pass also configures the api.
       PORT: ${PORT_API:-3000}
-    # Healthcheck: api exposes GET /health
+    # Healthcheck: api exposes GET /health. The endpoint reflects BOTH the api
+    # process (returns 200) AND the freshness of the upstream OpenRouter probe
+    # (returns 503 when lastUpstreamCheck is older than UPSTREAM_PROBE_FRESH_MS,
+    # default 5min). A single wget against /health is therefore a two-step probe:
+    # container flips to `unhealthy` within ~30s if OpenRouter goes dark, well
+    # under the 60s budget in plan 1.6. start_period=10s gives the boot-time
+    # probe time to complete before the first check.
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT_API:-3000}/health"]
-      interval: 30s
+      interval: 10s
       timeout: 5s
       retries: 3
-      start_period: 5s
+      start_period: 10s
     networks:
       - cv-net
 
 networks:
   cv-net:
     driver: bridge
+  # plan 3.2: decoupled from Dokploy so `docker compose up` works without it.
+  # In dev (DOKPLOY_EXTERNAL unset) the network is a regular local bridge that
+  # the web service is wired to but does not use. In prod the operator sets
+  # DOKPLOY_EXTERNAL=true and DOKPLOY_NETWORK=<name>; the same network entry
+  # then resolves to an external lookup and the web service's existing
+  # attachment is meaningful.
   dokploy-network:
-    external: true
+    external: ${DOKPLOY_EXTERNAL:-false}
+    name: ${DOKPLOY_NETWORK:-dokploy-network}
+
+# Named volume for the api's persistent state (threads + uploads). Plan 2.3.
+# Survives `docker compose down` (only removed by `docker compose down -v`).
+volumes:
+  yuyi-data:

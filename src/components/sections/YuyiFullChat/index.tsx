@@ -5,7 +5,7 @@
 // Suggested prompt cards appear on a fresh chat to bootstrap the conversation.
 import { useEffect, useRef, useState, type ChangeEvent, type ClipboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Plus, MessageSquare, Trash2, PanelLeftClose, PanelLeftOpen, Sparkles, Check, CheckCheck, Paperclip, X } from 'lucide-react';
+import { Send, Plus, MessageSquare, Trash2, PanelLeftClose, PanelLeftOpen, Sparkles, Check, CheckCheck, Paperclip, X, AlertCircle, RefreshCw } from 'lucide-react';
 import { useYuyiStore, yuyiStore, getMessageText, getMessageImage, type ChatSession } from '@/stores/yuyi';
 import { AssistantMessage } from '@/components/organisms/ChatBubble/message';
 import { useAnimateLastMessage } from '@/components/organisms/ChatBubble/use-animate-last';
@@ -23,7 +23,7 @@ const SUGGESTED_PROMPTS = [
 ];
 
 export default function YuyiPage() {
-  const { messages, isLoading, input, chats, currentChatId } = useYuyiStore();
+  const { messages, isLoading, input, chats, currentChatId, lastError } = useYuyiStore();
   const messagesRef = useChatMessagesScroll<HTMLDivElement>(currentChatId);
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -51,11 +51,24 @@ export default function YuyiPage() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  const readFile = (file: File) => {
+  const readFile = async (file: File) => {
     if (file.size > MAX_IMAGE_BYTES) return;
-    const reader = new FileReader();
-    reader.onload = () => setPendingImage(reader.result as string);
-    reader.readAsDataURL(file);
+    // New upload flow (plan 2.1): POST the file to /api/chat/upload, get back
+    // a URL, and store the URL in the chat history. Replaces the old base64
+    // inlining which inflated every chat turn with the full image bytes.
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await fetch('/api/chat/upload', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = (await res.json()) as { url?: string };
+      if (!data.url) throw new Error('Upload response missing url');
+      setPendingImage(data.url);
+    } catch (err) {
+      // Image upload failed; leave pendingImage unset and log for the operator.
+      // The user can retry by re-attaching the file.
+      console.warn('yuyi: image upload failed', err);
+    }
   };
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -200,6 +213,46 @@ export default function YuyiPage() {
 
         <div className="shrink-0 border-t border-border bg-surface/40 p-4 backdrop-blur-sm">
           <div className="mx-auto max-w-3xl">
+            <AnimatePresence>
+              {lastError && (
+                <motion.div
+                  key={lastError.requestId ?? `${lastError.kind}_${lastError.status ?? ''}`}
+                  role="alert"
+                  aria-live="polite"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ duration: 0.15 }}
+                  className="mb-2 flex items-start gap-2 rounded-lg border border-error/40 bg-error/10 px-3 py-2 text-xs text-text-primary"
+                >
+                  <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-error" aria-hidden="true" />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-mono leading-snug">No pude enviar tu mensaje: {lastError.message}.</p>
+                    {lastError.status !== undefined && (
+                      <p className="mt-0.5 font-mono text-[10px] text-text-secondary">HTTP {lastError.status}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={yuyiStore.retry}
+                    disabled={isLoading}
+                    className="flex shrink-0 items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 font-mono text-[11px] text-text-primary transition-colors hover:border-primary hover:text-primary disabled:opacity-40"
+                    aria-label="Reintentar"
+                    title="Reintentar"
+                  >
+                    <RefreshCw className="h-3 w-3" />
+                    Reintentar
+                  </button>
+                  <button
+                    onClick={yuyiStore.clearError}
+                    className="shrink-0 rounded-md p-1 text-text-secondary transition-colors hover:bg-border hover:text-text-primary"
+                    aria-label="Cerrar error"
+                    title="Cerrar"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
             {pendingImage && (
               <div className="mb-2 flex">
                 <div className="relative">
