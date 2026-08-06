@@ -24,10 +24,8 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
 
 # Copy the api code. Use --chown to ensure files are owned by the non-root user.
 COPY --chown=node:node api/ ./api/
-
-# Drop privileges: run as the built-in "node" user (UID 1000) instead of root.
-# Defense in depth: even if an attacker gets code execution, they don't have root.
-USER node
+COPY --chown=root:root scripts/api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
+RUN chmod +x /usr/local/bin/api-entrypoint.sh
 
 # plan 3.5: HEALTHCHECK mirrors the compose-level probe. `docker run` (without
 # compose) and `docker compose` produce identical healthcheck behavior so an
@@ -44,4 +42,4 @@ ENV STARTUP_TIMEOUT_MS=10000
 # Env vars come from docker-compose.yml (LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, SITE_URL, PORT)
 # The PORT default in app.mjs is 3001
 EXPOSE 3001
-CMD ["node", "api/app.mjs"]
+ENTRYPOINT ["/usr/local/bin/api-entrypoint.sh"]
