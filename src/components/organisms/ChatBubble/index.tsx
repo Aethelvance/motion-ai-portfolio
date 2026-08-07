@@ -178,7 +178,7 @@ export default function AIAssistant() {
                   className="flex-1 bg-transparent font-mono text-xs text-text-primary placeholder:text-text-secondary focus:outline-none disabled:opacity-50"
                 />
                 <button
-                  onClick={yuyiStore.send}
+                  onClick={() => yuyiStore.send()}
                   disabled={isLoading || !input.trim()}
                   className="text-primary transition-colors hover:text-text-primary disabled:opacity-30"
                   aria-label="Enviar"
